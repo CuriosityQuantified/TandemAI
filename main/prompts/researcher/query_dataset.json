@@ -1,0 +1,273 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-11-13",
+    "description": "32 research queries for evaluating researcher agent performance across diverse topics and complexity levels",
+    "total_queries": 32,
+    "categories": {
+      "technology": 10,
+      "science": 8,
+      "business": 6,
+      "health": 4,
+      "environment": 4
+    }
+  },
+  "queries": [
+    {
+      "id": 1,
+      "category": "technology",
+      "complexity": "medium",
+      "query": "Summarize the latest developments in quantum computing hardware and software from the past 3 months",
+      "expected_aspects": ["quantum hardware", "quantum algorithms", "commercial applications", "research breakthroughs"],
+      "expected_steps": 5
+    },
+    {
+      "id": 2,
+      "category": "technology",
+      "complexity": "high",
+      "query": "Compare LangChain vs LlamaIndex for building LLM applications, focusing on architecture, ease of use, and performance",
+      "expected_aspects": ["LangChain architecture", "LlamaIndex architecture", "developer experience", "performance metrics", "use cases"],
+      "expected_steps": 7
+    },
+    {
+      "id": 3,
+      "category": "science",
+      "complexity": "medium",
+      "query": "What are the latest findings in CRISPR gene editing research from 2024-2025?",
+      "expected_aspects": ["medical applications", "ethical concerns", "recent trials", "technological improvements"],
+      "expected_steps": 5
+    },
+    {
+      "id": 4,
+      "category": "business",
+      "complexity": "low",
+      "query": "Summarize the current state of remote work adoption in Fortune 500 companies",
+      "expected_aspects": ["adoption rates", "hybrid models", "productivity data", "challenges"],
+      "expected_steps": 4
+    },
+    {
+      "id": 5,
+      "category": "health",
+      "complexity": "medium",
+      "query": "Review recent studies on the effectiveness of intermittent fasting for metabolic health",
+      "expected_aspects": ["weight loss", "insulin sensitivity", "cardiovascular effects", "study quality"],
+      "expected_steps": 5
+    },
+    {
+      "id": 6,
+      "category": "environment",
+      "complexity": "high",
+      "query": "Analyze global renewable energy adoption trends in 2024, comparing solar, wind, and battery storage progress",
+      "expected_aspects": ["solar capacity", "wind installations", "battery technology", "regional differences", "policy impacts"],
+      "expected_steps": 8
+    },
+    {
+      "id": 7,
+      "category": "technology",
+      "complexity": "medium",
+      "query": "What are the latest advancements in autonomous vehicle technology and regulatory challenges?",
+      "expected_aspects": ["sensor technology", "AI improvements", "safety records", "regulatory landscape"],
+      "expected_steps": 5
+    },
+    {
+      "id": 8,
+      "category": "science",
+      "complexity": "low",
+      "query": "Summarize recent discoveries about exoplanets in the habitable zone",
+      "expected_aspects": ["new discoveries", "detection methods", "habitability criteria"],
+      "expected_steps": 4
+    },
+    {
+      "id": 9,
+      "category": "business",
+      "complexity": "medium",
+      "query": "Compare the business models of Netflix vs Disney+ in the streaming wars",
+      "expected_aspects": ["content strategy", "pricing models", "subscriber growth", "profitability"],
+      "expected_steps": 6
+    },
+    {
+      "id": 10,
+      "category": "technology",
+      "complexity": "high",
+      "query": "Evaluate the current state of AI safety research, including alignment, interpretability, and governance",
+      "expected_aspects": ["alignment research", "interpretability methods", "governance frameworks", "safety organizations", "key challenges"],
+      "expected_steps": 7
+    },
+    {
+      "id": 11,
+      "category": "health",
+      "complexity": "medium",
+      "query": "Review the latest research on psychedelic-assisted therapy for mental health conditions",
+      "expected_aspects": ["clinical trials", "mechanisms", "conditions treated", "safety profile"],
+      "expected_steps": 5
+    },
+    {
+      "id": 12,
+      "category": "environment",
+      "complexity": "medium",
+      "query": "Summarize current carbon capture technologies and their commercial viability",
+      "expected_aspects": ["DAC technology", "industrial capture", "storage methods", "economics"],
+      "expected_steps": 5
+    },
+    {
+      "id": 13,
+      "category": "technology",
+      "complexity": "low",
+      "query": "What are the key features of the latest iPhone 16 release?",
+      "expected_aspects": ["hardware specs", "new features", "pricing", "reviews"],
+      "expected_steps": 4
+    },
+    {
+      "id": 14,
+      "category": "science",
+      "complexity": "high",
+      "query": "Analyze recent progress in nuclear fusion energy, including ITER, NIF, and private sector efforts",
+      "expected_aspects": ["ITER progress", "NIF achievements", "private companies", "timeline to commercialization", "technical challenges"],
+      "expected_steps": 8
+    },
+    {
+      "id": 15,
+      "category": "business",
+      "complexity": "medium",
+      "query": "Compare the AI strategies of Microsoft, Google, and OpenAI in 2024-2025",
+      "expected_aspects": ["Microsoft approach", "Google approach", "OpenAI approach", "competitive positioning"],
+      "expected_steps": 6
+    },
+    {
+      "id": 16,
+      "category": "technology",
+      "complexity": "medium",
+      "query": "Review the current state of blockchain technology beyond cryptocurrency applications",
+      "expected_aspects": ["supply chain", "digital identity", "smart contracts", "enterprise adoption"],
+      "expected_steps": 5
+    },
+    {
+      "id": 17,
+      "category": "health",
+      "complexity": "low",
+      "query": "Summarize current recommendations for Vitamin D supplementation",
+      "expected_aspects": ["dosage guidelines", "health benefits", "deficiency risks"],
+      "expected_steps": 3
+    },
+    {
+      "id": 18,
+      "category": "science",
+      "complexity": "medium",
+      "query": "What are the latest theories about dark matter and dark energy?",
+      "expected_aspects": ["dark matter candidates", "dark energy models", "observational evidence", "alternative theories"],
+      "expected_steps": 5
+    },
+    {
+      "id": 19,
+      "category": "environment",
+      "complexity": "low",
+      "query": "Review current electric vehicle adoption rates in the United States",
+      "expected_aspects": ["sales data", "market share", "infrastructure", "forecasts"],
+      "expected_steps": 4
+    },
+    {
+      "id": 20,
+      "category": "business",
+      "complexity": "high",
+      "query": "Analyze the impact of AI on software development jobs, including productivity gains and employment trends",
+      "expected_aspects": ["productivity studies", "job displacement", "new roles created", "skill requirements", "industry outlook"],
+      "expected_steps": 7
+    },
+    {
+      "id": 21,
+      "category": "technology",
+      "complexity": "medium",
+      "query": "Compare different approaches to AI model training: supervised, unsupervised, and reinforcement learning",
+      "expected_aspects": ["supervised learning", "unsupervised learning", "reinforcement learning", "use cases", "trade-offs"],
+      "expected_steps": 6
+    },
+    {
+      "id": 22,
+      "category": "science",
+      "complexity": "medium",
+      "query": "Summarize recent breakthroughs in Alzheimer's disease research and treatment",
+      "expected_aspects": ["new drugs", "early detection", "prevention strategies", "clinical trials"],
+      "expected_steps": 5
+    },
+    {
+      "id": 23,
+      "category": "health",
+      "complexity": "medium",
+      "query": "Review the effectiveness of different types of exercise for longevity and healthspan",
+      "expected_aspects": ["cardio benefits", "strength training", "HIIT", "longevity research"],
+      "expected_steps": 5
+    },
+    {
+      "id": 24,
+      "category": "technology",
+      "complexity": "high",
+      "query": "Evaluate the current landscape of edge computing, including use cases, vendors, and comparison to cloud computing",
+      "expected_aspects": ["edge vs cloud", "use cases", "major vendors", "5G integration", "future trends"],
+      "expected_steps": 7
+    },
+    {
+      "id": 25,
+      "category": "business",
+      "complexity": "medium",
+      "query": "Analyze the gig economy's impact on traditional employment in 2024",
+      "expected_aspects": ["market size", "worker benefits", "regulatory changes", "economic impact"],
+      "expected_steps": 5
+    },
+    {
+      "id": 26,
+      "category": "environment",
+      "complexity": "medium",
+      "query": "Review progress on ocean plastic cleanup initiatives and prevention strategies",
+      "expected_aspects": ["cleanup technologies", "prevention efforts", "policy measures", "effectiveness data"],
+      "expected_steps": 5
+    },
+    {
+      "id": 27,
+      "category": "technology",
+      "complexity": "low",
+      "query": "What are the main differences between ChatGPT-4 and Claude 3.5 Sonnet?",
+      "expected_aspects": ["capabilities", "pricing", "use cases", "limitations"],
+      "expected_steps": 4
+    },
+    {
+      "id": 28,
+      "category": "science",
+      "complexity": "high",
+      "query": "Analyze the state of space exploration in 2024-2025, including NASA, SpaceX, and international programs",
+      "expected_aspects": ["NASA missions", "SpaceX projects", "Chinese space program", "ESA activities", "commercial space"],
+      "expected_steps": 8
+    },
+    {
+      "id": 29,
+      "category": "business",
+      "complexity": "low",
+      "query": "Summarize the current trends in B2B SaaS pricing models",
+      "expected_aspects": ["usage-based", "seat-based", "tiered pricing", "freemium"],
+      "expected_steps": 4
+    },
+    {
+      "id": 30,
+      "category": "technology",
+      "complexity": "medium",
+      "query": "Review the latest developments in neuromorphic computing and brain-inspired AI",
+      "expected_aspects": ["hardware advances", "algorithms", "applications", "research institutions"],
+      "expected_steps": 5
+    },
+    {
+      "id": 31,
+      "category": "science",
+      "complexity": "medium",
+      "query": "What are the latest findings on microplastics' impact on human health?",
+      "expected_aspects": ["exposure routes", "health effects", "bioaccumulation", "research gaps"],
+      "expected_steps": 5
+    },
+    {
+      "id": 32,
+      "category": "technology",
+      "complexity": "high",
+      "query": "Compare different AI orchestration frameworks: LangChain, LlamaIndex, AutoGPT, and CrewAI",
+      "expected_aspects": ["LangChain", "LlamaIndex", "AutoGPT", "CrewAI", "architecture comparison", "use cases"],
+      "expected_steps": 9
+    }
+  ]
+}
