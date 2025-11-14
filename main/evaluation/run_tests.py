@@ -146,7 +146,7 @@ def main():
     parser.add_argument(
         "--output",
         type=str,
-        default="/Users/nicholaspate/Documents/01_Active/ATLAS/main/results/evaluation_results.json",
+        default="/Users/nicholaspate/Documents/01_Active/TandemAI/main/results/evaluation_results.json",
         help="Output path for results JSON"
     )
     parser.add_argument(

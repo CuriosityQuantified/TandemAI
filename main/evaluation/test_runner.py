@@ -32,7 +32,7 @@ from tqdm import tqdm
 from langchain_anthropic import ChatAnthropic
 
 # Local imports
-from evaluation.judge_agents import JudgeRegistry
+from evaluation.judge_agents import JudgeRegistry, aggregate_judgments_to_evaluation_result
 from evaluation.rubrics import EvaluationResult, BinaryScore, ScaledScore
 
 load_dotenv('/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.env')
@@ -401,14 +401,129 @@ class EvaluationRunner:
             evaluation_results
         )
 
-        # Save aggregated results
+        # Save aggregated results (legacy format)
         output_path = self.results_dir / f"aggregated_{prompt_version}.json"
         with open(output_path, 'w') as f:
             json.dump(aggregated, f, indent=2)
 
         print(f"   ✅ Saved aggregated results to {output_path}")
 
+        # Step 5: Create structured EvaluationResult objects
+        print(f"\n📋 Step 5: Creating structured EvaluationResult objects...")
+        structured_results = self.aggregate_to_evaluation_results(
+            responses,
+            evaluation_results
+        )
+        print(f"   ✅ Created {len(structured_results)} EvaluationResult objects")
+
+        # Save structured results
+        self.save_evaluation_results(structured_results, prompt_version)
+
+        # Add structured results to return value
+        aggregated['structured_results'] = structured_results
+
         return aggregated
+
+    def aggregate_to_evaluation_results(
+        self,
+        responses: List[ResearcherResponse],
+        evaluations: List[EvaluationTaskResult]
+    ) -> List[EvaluationResult]:
+        """
+        Aggregate judge evaluations into structured EvaluationResult objects.
+
+        Takes individual judge task results and groups them by query, then
+        creates proper EvaluationResult objects with Pydantic models.
+
+        Args:
+            responses: List of researcher responses
+            evaluations: List of individual judge evaluation results
+
+        Returns:
+            List of EvaluationResult objects (one per query)
+        """
+        # Group evaluations by query
+        evaluations_by_query: Dict[int, Dict[str, Dict[str, Any]]] = {}
+
+        for eval_result in evaluations:
+            query_id = eval_result.query_id
+            if query_id not in evaluations_by_query:
+                evaluations_by_query[query_id] = {}
+
+            # Store judge decision in format expected by aggregation function
+            evaluations_by_query[query_id][eval_result.rubric_name] = {
+                'score': eval_result.score,
+                'reasoning': eval_result.reasoning
+            }
+
+        # Create EvaluationResult objects
+        evaluation_results: List[EvaluationResult] = []
+
+        for response in responses:
+            query_id = response.query_id
+
+            # Skip if this query has errors or no evaluations
+            if response.error or query_id not in evaluations_by_query:
+                continue
+
+            judge_decisions = evaluations_by_query[query_id]
+
+            # Check if we have all 7 judges
+            if len(judge_decisions) < 7:
+                print(f"⚠️  Query {query_id}: Only {len(judge_decisions)}/7 judges completed")
+                continue
+
+            try:
+                # Use aggregation function to create EvaluationResult
+                eval_result = aggregate_judgments_to_evaluation_result(
+                    query_id=query_id,
+                    query_text=response.query_text,
+                    prompt_version=response.prompt_version,
+                    judge_decisions=judge_decisions,
+                    researcher_response=response.response_text,
+                    researcher_plan=response.metadata.get('plan') if response.metadata else None
+                )
+                evaluation_results.append(eval_result)
+
+            except Exception as e:
+                print(f"⚠️  Query {query_id}: Aggregation failed - {e}")
+                continue
+
+        return evaluation_results
+
+    def save_evaluation_results(
+        self,
+        evaluation_results: List[EvaluationResult],
+        prompt_version: str
+    ) -> Path:
+        """
+        Save EvaluationResult objects to JSON file.
+
+        Args:
+            evaluation_results: List of EvaluationResult objects
+            prompt_version: Prompt version identifier
+
+        Returns:
+            Path to saved file
+        """
+        output_path = self.results_dir / f"evaluation_results_{prompt_version}.json"
+
+        # Convert Pydantic models to dict
+        results_data = {
+            'metadata': {
+                'prompt_version': prompt_version,
+                'total_queries': len(evaluation_results),
+                'timestamp': datetime.now().isoformat(),
+                'runner_version': '1.0'
+            },
+            'results': [result.model_dump() for result in evaluation_results]
+        }
+
+        with open(output_path, 'w') as f:
+            json.dump(results_data, f, indent=2)
+
+        print(f"   ✅ Saved {len(evaluation_results)} EvaluationResults to {output_path}")
+        return output_path
 
     def _aggregate_results(
         self,

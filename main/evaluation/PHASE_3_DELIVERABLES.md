@@ -34,7 +34,7 @@ Successfully implemented Phase 3 of the evaluation framework for the Benchmark R
 ## File Structure
 
 ```
-/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/
+/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/
 ├── test_suite.py                    # 32 test queries + evaluation logic
 ├── run_tests.py                     # CLI test runner
 ├── README.md                        # Comprehensive documentation
@@ -448,7 +448,7 @@ tavily-python       # For search tool
 ### Environment
 - **Virtual Env**: `/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.venv`
 - **.env File**: `/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.env`
-- **Working Dir**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/`
+- **Working Dir**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/`
 
 ---
 

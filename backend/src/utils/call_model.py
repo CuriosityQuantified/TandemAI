@@ -42,10 +42,19 @@ except ImportError:
     groq = None
 
 try:
-    from langchain.chat_models import ChatOpenAI, ChatAnthropic
-    from langchain.schema import HumanMessage, SystemMessage, AIMessage
+    from langchain_openai import ChatOpenAI
 except ImportError:
-    ChatOpenAI = ChatAnthropic = HumanMessage = SystemMessage = AIMessage = None
+    ChatOpenAI = None
+
+try:
+    from langchain_anthropic import ChatAnthropic
+except ImportError:
+    ChatAnthropic = None
+
+try:
+    from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+except ImportError:
+    HumanMessage = SystemMessage = AIMessage = None
 
 try:
     import google.generativeai as genai

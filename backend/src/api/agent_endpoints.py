@@ -6,6 +6,7 @@ Real agent integration for Tasks tab frontend communication
 import asyncio
 import time
 import uuid
+import traceback
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Request
@@ -33,8 +34,8 @@ logger = logging.getLogger(__name__)
 
 # Request/Response Models
 class TaskCreateRequest(BaseModel):
-    task_type: str
     description: str
+    type: str = "general"  # Changed from task_type to match frontend
     priority: str = "medium"
     context: Optional[Dict[str, Any]] = None
     use_v2_supervisor: bool = True  # Default to V2 for testing
@@ -88,8 +89,10 @@ async def create_agent_task(
         task_id = f"task_{int(time.time())}_{str(uuid.uuid4())[:8]}"
         
         # Initialize enhanced MLflow tracking
-        mlflow_tracker = EnhancedATLASTracker()
-        logger.info(f"MLflow tracking available for task {task_id}")
+        # TODO: Re-enable when MLflow server is running
+        # mlflow_tracker = EnhancedATLASTracker()
+        mlflow_tracker = None
+        logger.info(f"Task {task_id} created (MLflow tracking disabled)")
         
         # Create chat session for this task
         chat_session_id = await chat_manager.get_or_create_session(
@@ -98,25 +101,27 @@ async def create_agent_task(
         )
         
         # Create MLflow chat experiment
-        mlflow_run_id = await chat_tracker.create_chat_experiment(
-            session_id=chat_session_id,
-            task_id=task_id,
-            chat_metadata={
-                "task_type": request.task_type,
-                "description": request.description,
-                "priority": request.priority,
-                "context": request.context or {}
-            }
-        )
-        
+        # TODO: Re-enable when MLflow server is running
+        mlflow_run_id = None
+        # mlflow_run_id = await chat_tracker.create_chat_experiment(
+        #     session_id=chat_session_id,
+        #     task_id=task_id,
+        #     chat_metadata={
+        #         "task_type": request.type,  # Changed from request.task_type
+        #         "description": request.description,
+        #         "priority": request.priority,
+        #         "context": request.context or {}
+        #     }
+        # )
+
         # Update chat session with MLflow run ID
-        if mlflow_run_id:
-            await chat_manager.update_session_mlflow_run(chat_session_id, mlflow_run_id)
+        # if mlflow_run_id:
+        #     await chat_manager.update_session_mlflow_run(chat_session_id, mlflow_run_id)
         
         # Create task object
         task = Task(
             task_id=task_id,
-            task_type=request.task_type,
+            task_type=request.type,  # Changed from request.task_type
             description=request.description,
             priority=request.priority,
             context=request.context or {}
@@ -141,10 +146,9 @@ async def create_agent_task(
         # Store active agents for this task
         active_agents[task_id] = {
             "global_supervisor": global_supervisor,
-            "library_agent": None,  # Library agent not implemented yet
             "task": task,
             "created_at": datetime.now(),
-            "status": "created",
+            "status": "processing",  # Changed to processing since we auto-start
             "mlflow_tracker": mlflow_tracker,
             "mlflow_run_id": mlflow_run_id,
             "chat_session_id": chat_session_id
@@ -153,7 +157,7 @@ async def create_agent_task(
         # Broadcast task creation
         await broadcaster.broadcast_task_created(
             task_id=task_id,
-            task_type=request.task_type,
+            task_type=request.type,  # Changed from request.task_type
             description=request.description,
             priority=request.priority
         )
@@ -163,16 +167,22 @@ async def create_agent_task(
             task_id=task_id,
             agent_id="global_supervisor",
             old_status="inactive",
-            new_status="idle"
+            new_status="active"  # Changed to active since we're starting immediately
         )
-        
-        logger.info(f"Created task {task_id} with Global Supervisor and Library Agent")
+
+        logger.info(f"Created task {task_id} with Global Supervisor")
+
+        # Immediately start processing the task - chatbot style
+        asyncio.create_task(_process_task_async(
+            global_supervisor, task, task_id, broadcaster, chat_session_id
+        ))
+        logger.info(f"Task {task_id} processing started immediately")
         
         return {
             "task_id": task_id,
-            "status": "created",
-            "message": "Task created and assigned to Global Supervisor",
-            "agents_initialized": ["global_supervisor", "library_agent"],
+            "status": "processing",  # Changed to processing
+            "message": "Task is being processed by Global Supervisor",  # Updated message
+            "agents_initialized": ["global_supervisor"],  # Removed library_agent
             "websocket_url": f"/api/agui/ws/{task_id}",
             "sse_url": f"/api/agui/stream/{task_id}",
             "mlflow_run_id": mlflow_tracker.current_run_id if mlflow_tracker else None,
@@ -215,7 +225,7 @@ async def start_agent_task(
         await broadcaster.broadcast_task_started(
             task_id=task_id,
             initial_prompt=task.description,
-            teams_involved=["global_supervisor", "library_agent"]
+            teams_involved=["global_supervisor"]  # Removed library_agent
         )
         
         # Start task processing asynchronously
@@ -240,13 +250,143 @@ async def _process_task_async(
     broadcaster: AGUIEventBroadcaster,
     chat_session_id: Optional[str] = None
 ):
-    """Process task asynchronously with the Global Supervisor."""
+    """Process task asynchronously with the Global Supervisor using LangChain streaming."""
     try:
         logger.info(f"Starting async processing for task {task_id}")
-        
-        # Process the task
+
+        # Broadcast that supervisor is starting to think
+        await broadcaster.broadcast_dialogue_update(
+            task_id=task_id,
+            agent_id="global_supervisor",
+            message_id=f"{task_id}_start",
+            direction="output",
+            content={
+                "type": "text",
+                "data": f"🤔 Processing: {task.description}"
+            },
+            sender="global_supervisor"
+        )
+
+        # Process the task using the Supervisor's send_message method (now async streaming)
         start_time = time.time()
-        result = await global_supervisor.process_task(task)
+
+        # Send the task description as a message to the supervisor
+        try:
+            # Accumulate response content and track tools
+            final_response = ""
+            tool_results = []
+            chunk_count = 0
+
+            # Stream chunks from the LangChain supervisor
+            async for chunk in global_supervisor.send_message(task.description):
+                chunk_count += 1
+                chunk_type = chunk.get('type')
+                chunk_data = chunk.get('data', {})
+
+                logger.debug(f"Received chunk {chunk_count}: type={chunk_type}")
+
+                # Handle content chunks - stream text as it's generated
+                if chunk_type == 'content':
+                    content = chunk_data.get('content', '')
+                    final_response += content
+
+                    # Broadcast content chunks for real-time updates
+                    await broadcaster.broadcast_dialogue_update(
+                        task_id=task_id,
+                        agent_id="global_supervisor",
+                        message_id=f"{task_id}_content_{chunk_count}",
+                        direction="output",
+                        content={
+                            "type": "text",
+                            "data": content
+                        },
+                        sender="global_supervisor"
+                    )
+
+                # Handle tool call chunks - show tools being invoked
+                elif chunk_type == 'tool_call_chunk':
+                    tool_name = chunk_data.get('name')
+                    if tool_name:
+                        logger.info(f"Tool call started: {tool_name}")
+                        await broadcaster.broadcast_tool_call_initiated(
+                            task_id=task_id,
+                            agent_id="global_supervisor",
+                            tool_call_id=chunk_data.get('id', str(uuid.uuid4())),
+                            tool_name=tool_name,
+                            arguments=chunk_data.get('args', {})
+                        )
+
+                # Handle tool results - show tool execution outcomes
+                elif chunk_type == 'tool_result':
+                    tool_name = chunk_data.get('tool_name', 'unknown')
+                    tool_result = chunk_data.get('result')
+                    success = chunk_data.get('success', False)
+
+                    tool_results.append(chunk_data)
+                    logger.info(f"Tool result: {tool_name} - Success: {success}")
+
+                    # Broadcast tool completion
+                    await broadcaster.broadcast_dialogue_update(
+                        task_id=task_id,
+                        agent_id="global_supervisor",
+                        message_id=f"{task_id}_tool_{tool_name}_{chunk_count}",
+                        direction="output",
+                        content={
+                            "type": "tool_result",
+                            "data": {
+                                "tool_name": tool_name,
+                                "result": str(tool_result)[:200],  # Truncate for UI
+                                "success": success
+                            }
+                        },
+                        sender="global_supervisor"
+                    )
+
+                # Handle complete event - final summary
+                elif chunk_type == 'complete':
+                    duration_ms = chunk_data.get('duration_ms', 0)
+                    logger.info(f"Task completed in {duration_ms}ms with {len(tool_results)} tool calls")
+
+            # Create a successful task result
+            from ..agents.base import TaskResult
+            result = TaskResult(
+                task_id=task_id,
+                agent_id="global_supervisor",
+                result_type="completion",
+                content=final_response if final_response else "Task processed successfully",
+                success=True,
+                processing_time=(time.time() - start_time),
+                metadata={
+                    "task_id": task_id,
+                    "agent": "global_supervisor",
+                    "tool_calls": len(tool_results),
+                    "chunks_processed": chunk_count
+                }
+            )
+        except Exception as e:
+            logger.error(f"Supervisor processing error: {e}", exc_info=True)
+
+            # Broadcast error
+            await broadcaster.broadcast_error(
+                task_id=task_id,
+                agent_id="global_supervisor",
+                error_type="PROCESSING_ERROR",
+                error_message=str(e),
+                traceback=traceback.format_exc()
+            )
+
+            from ..agents.base import TaskResult
+            result = TaskResult(
+                task_id=task_id,
+                agent_id="global_supervisor",
+                result_type="error",
+                content=str(e),
+                success=False,
+                processing_time=(time.time() - start_time),
+                metadata={"task_id": task_id, "error": str(e)},
+                errors=[str(e)]
+            )
+
         processing_time_ms = int((time.time() - start_time) * 1000)
         
         # Update task status
@@ -416,67 +556,72 @@ async def send_user_input(
             sender="user"
         )
         
-        # Process the user input with the agent to capture metrics
+        # Process the user input with the agent using LangChain streaming
         try:
             if target_agent_id == "global_supervisor" and "global_supervisor" in task_data:
                 agent = task_data["global_supervisor"]
-                
-                # Use the agent's CallModel to process the user input
-                system_prompt = await agent.get_system_prompt()
-                
-                response = await agent.call_model.call_model(
-                    model_name="claude-3-5-haiku-20241022",
-                    system_prompt=system_prompt,
-                    most_recent_message=request.message,
-                    max_tokens=500,
-                    temperature=0.7
-                )
-                
-                # Log conversation turn if we have enhanced tracker
-                if hasattr(agent.mlflow_tracker, 'log_conversation_turn') and response.success:
-                    await asyncio.get_event_loop().run_in_executor(
-                        None,
-                        agent.mlflow_tracker.log_conversation_turn,
-                        str(uuid.uuid4()),  # turn_id
-                        agent.agent_id,     # agent_id
-                        request.message,    # user_message
-                        response.content,   # agent_response
-                        1,                  # turn_number
-                        request.context or {},  # context
-                        response.response_time * 1000 if response.response_time else 0.0,  # response_time_ms
-                        None,               # user_satisfaction
-                        {"frontend_input": True}  # metadata
+                start_time = time.time()
+
+                # Stream response from supervisor and accumulate
+                full_response = ""
+
+                async for chunk in agent.send_message(request.message):
+                    chunk_type = chunk.get('type')
+                    chunk_data = chunk.get('data', {})
+
+                    # Accumulate content chunks
+                    if chunk_type == 'content':
+                        content = chunk_data.get('content', '')
+                        full_response += content
+
+                        # Broadcast content chunks for real-time updates
+                        await broadcaster.broadcast_dialogue_update(
+                            task_id=task_id,
+                            agent_id=target_agent_id,
+                            message_id=str(uuid.uuid4()),
+                            direction="output",
+                            content={
+                                "type": "text",
+                                "data": content
+                            },
+                            sender=target_agent_id
+                        )
+
+                    # Broadcast tool usage if any
+                    elif chunk_type == 'tool_result':
+                        tool_name = chunk_data.get('tool_name', 'unknown')
+                        logger.info(f"User input triggered tool: {tool_name}")
+
+                processing_time_ms = int((time.time() - start_time) * 1000)
+
+                # Save to chat history if we have a session
+                chat_session_id = task_data.get("chat_session_id")
+                if chat_session_id and full_response:
+                    await chat_manager.save_message(
+                        session_id=chat_session_id,
+                        message_type="user",
+                        content=request.message,
+                        metadata={"frontend_input": True}
                     )
-                
-                if response.success:
-                    # Broadcast the agent's response
-                    await broadcaster.broadcast_dialogue_update(
-                        task_id=task_id,
+                    await chat_manager.save_message(
+                        session_id=chat_session_id,
+                        message_type="agent",
+                        content=full_response,
                         agent_id=target_agent_id,
-                        message_id=str(uuid.uuid4()),
-                        direction="output",
-                        content={
-                            "type": "text",
-                            "data": response.content
-                        },
-                        sender=target_agent_id
+                        processing_time_ms=processing_time_ms,
+                        model_used="gpt-4o",  # From LangChain supervisor config
+                        metadata={"response_to_user_input": True}
                     )
-                    
-                    return {
-                        "task_id": task_id,
-                        "agent_id": target_agent_id,
-                        "status": "processed",
-                        "message": f"User input processed by {target_agent_id}",
-                        "response": response.content[:200] + "..." if len(response.content) > 200 else response.content
-                    }
-                else:
-                    logger.error(f"Agent {target_agent_id} failed to process input: {response.error}")
-                    return {
-                        "task_id": task_id,
-                        "agent_id": target_agent_id,
-                        "status": "error",
-                        "message": f"Failed to process input: {response.error}"
-                    }
+
+                return {
+                    "task_id": task_id,
+                    "agent_id": target_agent_id,
+                    "status": "processed",
+                    "message": f"User input processed by {target_agent_id}",
+                    "response": full_response[:200] + "..." if len(full_response) > 200 else full_response,
+                    "processing_time_ms": processing_time_ms
+                }
+
             else:
                 # For other agents or if agent not found, just acknowledge
                 return {
@@ -485,9 +630,9 @@ async def send_user_input(
                     "status": "received",
                     "message": f"User input forwarded to {target_agent_id}"
                 }
-                
+
         except Exception as e:
-            logger.error(f"Error processing user input with agent {target_agent_id}: {e}")
+            logger.error(f"Error processing user input with agent {target_agent_id}: {e}", exc_info=True)
             return {
                 "task_id": task_id,
                 "agent_id": target_agent_id,
@@ -507,45 +652,49 @@ async def get_task_agents(task_id: str):
     try:
         if task_id not in active_agents:
             raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
-        
+
         task_data = active_agents[task_id]
-        
+
         # Get agent statuses
         agents_info = {}
-        
-        # Global Supervisor
+
+        # Global Supervisor - use get_status() method
         if "global_supervisor" in task_data:
             supervisor = task_data["global_supervisor"]
+            supervisor_status = supervisor.get_status()
+
             agents_info["global_supervisor"] = {
-                "agent_id": supervisor.agent_id,
-                "agent_type": supervisor.agent_type,
-                "status": supervisor.status.value,
-                "created_at": supervisor.created_at.isoformat(),
-                "team_name": getattr(supervisor, 'team_name', 'ATLAS_Global')
+                "task_id": supervisor_status.get("task_id"),
+                "model": supervisor_status.get("model"),
+                "temperature": supervisor_status.get("temperature"),
+                "tool_count": supervisor_status.get("tool_count"),
+                "tools": supervisor_status.get("tools", []),
+                "message_count": supervisor_status.get("message_count", 0),
+                "streaming_enabled": supervisor_status.get("streaming_enabled", True),
+                "created_at": task_data.get("created_at", datetime.now()).isoformat()
             }
-        
-        # Library Agent
+
+        # Library Agent (if present)
         if "library_agent" in task_data:
             library = task_data["library_agent"]
             agents_info["library_agent"] = {
-                "agent_id": library.agent_id,
-                "agent_type": library.agent_type,
-                "status": library.status.value,
-                "created_at": library.created_at.isoformat(),
+                "agent_type": "library",
+                "status": "active",
+                "created_at": task_data.get("created_at", datetime.now()).isoformat(),
                 "stats": getattr(library, 'stats', {})
             }
-        
+
         return {
             "task_id": task_id,
             "total_agents": len(agents_info),
             "agents": agents_info,
             "task_status": task_data["status"]
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Failed to get agents for task {task_id}: {e}")
+        logger.error(f"Failed to get agents for task {task_id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Agent retrieval failed: {str(e)}")
 
 @router.get("/library/stats")
@@ -636,22 +785,22 @@ async def cleanup_task(task_id: str):
     try:
         if task_id not in active_agents:
             raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
-        
+
         task_data = active_agents[task_id]
-        
-        # Clean up agents
+
+        # Clean up agents (now async in LangChain implementation)
         if "global_supervisor" in task_data:
-            task_data["global_supervisor"].cleanup()
-        
+            await task_data["global_supervisor"].cleanup()
+
         # Remove from active tasks
         del active_agents[task_id]
-        
+
         return {
             "task_id": task_id,
             "status": "cleaned_up",
             "message": "Task and associated agents cleaned up successfully"
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:

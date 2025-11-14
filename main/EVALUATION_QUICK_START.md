@@ -7,7 +7,7 @@
 ## Prerequisites
 
 ```bash
-cd /Users/nicholaspate/Documents/01_Active/ATLAS/main
+cd /Users/nicholaspate/Documents/01_Active/TandemAI/main
 source /Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.venv/bin/activate
 pip install scipy numpy tqdm
 ```

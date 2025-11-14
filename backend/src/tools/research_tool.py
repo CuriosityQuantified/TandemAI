@@ -4,7 +4,7 @@ Delegates research tasks to research agents with structured prompts
 """
 
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,15 +12,20 @@ logger = logging.getLogger(__name__)
 # Global factory instance (lazy initialization)
 _factory = None
 
+
 def get_factory():
     """Get or create the LettaAgentFactory instance."""
     global _factory
     if _factory is None:
         from src.agents.agent_factory import LettaAgentFactory
+
         _factory = LettaAgentFactory()
     return _factory
 
-def delegate_research(context: str, task_description: str, restrictions: str = "") -> Dict[str, Any]:
+
+def delegate_research(
+    context: str, task_description: str, restrictions: str = ""
+) -> dict:
     """
     Delegate research task to research agent using structured XML prompts.
 
@@ -78,19 +83,20 @@ def delegate_research(context: str, task_description: str, restrictions: str = "
             "status": "delegated",
             "delegated_at": datetime.now().isoformat(),
             "initial_response": response,
-            "agent_namespace": agent_namespace
+            "agent_namespace": agent_namespace,
         }
 
     except Exception as e:
         logger.error(f"Failed to delegate research task: {str(e)}")
         return {
-            "task_id": task_id if 'task_id' in locals() else "error",
+            "task_id": task_id if "task_id" in locals() else "error",
             "status": "failed",
             "error": str(e),
-            "delegated_at": datetime.now().isoformat()
+            "delegated_at": datetime.now().isoformat(),
         }
 
-def get_research_status(agent_id: str) -> Dict[str, Any]:
+
+def get_research_status(agent_id: str) -> dict:
     """
     Get the current status of a research agent's task.
 
@@ -111,7 +117,7 @@ def get_research_status(agent_id: str) -> Dict[str, Any]:
             "agent_id": agent_id,
             "status": "active",
             "response": response,
-            "queried_at": datetime.now().isoformat()
+            "queried_at": datetime.now().isoformat(),
         }
 
     except Exception as e:
@@ -120,5 +126,5 @@ def get_research_status(agent_id: str) -> Dict[str, Any]:
             "agent_id": agent_id,
             "status": "error",
             "error": str(e),
-            "queried_at": datetime.now().isoformat()
+            "queried_at": datetime.now().isoformat(),
         }

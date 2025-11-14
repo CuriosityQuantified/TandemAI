@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from typing import Dict, Any
+from pydantic import BaseModel
 import uvicorn
 import os
 import logging
@@ -21,7 +22,8 @@ from src.agui.copilot_bridge import setup_copilot_routes
 # Import API endpoints
 from src.api.agent_endpoints import router as agent_router
 from src.api.chat_endpoints import router as chat_router
-from src.api.letta_endpoints import router as letta_router
+# from src.api.letta_endpoints import router as letta_router  # Archived - Letta deprecated
+from src.api.session_api import router as session_router
 
 # Load environment variables
 load_dotenv()
@@ -96,7 +98,8 @@ app.router.lifespan_context = lifespan
 # Include API routers
 app.include_router(agent_router, prefix="/api")
 app.include_router(chat_router)
-app.include_router(letta_router)
+# app.include_router(letta_router)  # Archived - Letta deprecated
+app.include_router(session_router)
 
 # Set up CopilotKit bridge
 # Create a connection manager instance for CopilotKit
@@ -138,13 +141,24 @@ async def health_check():
         }
     }
 
+# Pydantic Models for Request Validation
+
+class TaskCreate(BaseModel):
+    """Model for task creation requests from frontend."""
+    description: str
+    type: str = "general"
+
 # Task Management Endpoints
 
 @app.post("/api/tasks")
-async def create_task(task_data: Dict[str, Any]):
+async def create_task(task_data: TaskCreate):
     """Create a new ATLAS task."""
     try:
-        task_id = f"task_{hash(str(task_data)) % 100000}"
+        # Generate task ID based on the description
+        task_id = f"task_{hash(task_data.description) % 100000}"
+
+        # Log the task creation request
+        logger.info(f"Creating task: type={task_data.type}, description={task_data.description[:50]}...")
         
         # TODO: Implement actual task creation logic
         # This is a placeholder implementation

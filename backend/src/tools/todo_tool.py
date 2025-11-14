@@ -3,7 +3,7 @@ Todo Management Tool for ATLAS Agents
 Minimal todo tracking with namespace isolation for multi-agent systems
 """
 
-from typing import Dict, List, Any, Optional
+from typing import List, Optional
 from datetime import datetime
 from enum import Enum
 
@@ -16,15 +16,15 @@ class TodoStatus(Enum):
     FAILED = "failed"
 
 # Global storage with namespace isolation for multi-agent support
-_todo_stores: Dict[str, List[Dict]] = {}
+_todo_stores: dict = {}
 
 def create_todo(
     task_id: str,
     description: str,
-    task_type: Optional[str] = None,
-    dependencies: Optional[List[str]] = None,
-    agent_namespace: Optional[str] = None
-) -> Dict[str, Any]:
+    task_type: str = "",
+    dependencies: list = None,
+    agent_namespace: str = ""
+) -> dict:
     """
     Creates a new todo item for tracking.
 
@@ -43,7 +43,7 @@ def create_todo(
     """
 
     # Determine namespace (default to supervisor)
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     if namespace not in _todo_stores:
         _todo_stores[namespace] = []
     todo = {
@@ -67,10 +67,10 @@ def create_todo(
 def update_todo_status(
     task_id: str,
     status: str,
-    result: Optional[Any] = None,
-    error: Optional[str] = None,
-    agent_namespace: Optional[str] = None
-) -> Dict[str, Any]:
+    result: str = "",
+    error: str = "",
+    agent_namespace: str = ""
+) -> dict:
     """
     Updates the status of a todo item.
     The supervisor maintains full context so no query functions are needed.
@@ -86,7 +86,7 @@ def update_todo_status(
         The updated todo item
     """
     # Determine namespace
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     if namespace not in _todo_stores:
         return {"error": f"No todos found in namespace '{namespace}'"}
 
@@ -108,14 +108,14 @@ def update_todo_status(
     return {"error": f"Todo with task_id '{task_id}' not found"}
 
 # Utility functions for testing/debugging only (not exposed as tools)
-def _get_all_todos(agent_namespace: Optional[str] = None) -> List[Dict[str, Any]]:
+def _get_all_todos(agent_namespace: str = "") -> list:
     """Internal function to retrieve all todos for debugging."""
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     return _todo_stores.get(namespace, [])
 
-def _clear_todos(agent_namespace: Optional[str] = None) -> Dict[str, str]:
+def _clear_todos(agent_namespace: str = "") -> dict:
     """Internal function to clear todos for testing."""
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     if namespace in _todo_stores:
         _todo_stores[namespace] = []
         return {"status": f"All todos cleared for namespace '{namespace}'"}

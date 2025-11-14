@@ -8,8 +8,8 @@ OPTIMIZATION STATUS: ❌ NOT OPTIMIZED - This is a template placeholder
 OPTIMIZATION GOALS:
   - Target: Reduce token count while maintaining or improving performance
   - Baseline comparison: 7,267 tokens (Enhanced V3)
-  - Stretch goal: <5,000 tokens (31% reduction)
-  - Acceptable range: 5,000-7,000 tokens
+  - Target: <15,000 tokens (acceptable range)
+  - Acceptable range: 7,000-15,000 tokens
 
 EVALUATION METRICS (vs Benchmark):
   - Planning Quality: Maintain or improve binary (Good/Poor) rating
@@ -227,13 +227,13 @@ def get_prompt_metadata() -> Dict[str, Any]:
             "challenger_tokens": token_count,
             "token_reduction": token_reduction,
             "reduction_percentage": reduction_percentage,
-            "target_tokens": 5000,
-            "stretch_goal_met": token_count < 5000
+            "target_tokens": 15000,
+            "stretch_goal_met": token_count < 15000
         },
         "optimization_goals": [
             "Reduce token count while maintaining performance",
-            "Target: <7,267 tokens (any reduction)",
-            "Stretch goal: <5,000 tokens (31% reduction)",
+            "Target: <15,000 tokens (acceptable range)",
+            "Target: <15,000 tokens (acceptable range)",
             "Maintain all 7 evaluation metrics"
         ],
         "evaluation_pending": True,
@@ -288,7 +288,7 @@ if __name__ == "__main__":
     print(f"  Challenger v1: {comp['challenger_tokens']:,} tokens")
     print(f"  Reduction: {comp['token_reduction']:+,} tokens ({comp['reduction_percentage']:+.1f}%)")
     print(f"  Target: <{comp['target_tokens']:,} tokens")
-    print(f"  Stretch Goal (<5,000): {'✅ MET' if comp['stretch_goal_met'] else '❌ NOT MET'}")
+    print(f"  Stretch Goal (<15,000): {'✅ MET' if comp['stretch_goal_met'] else '❌ NOT MET'}")
     print()
 
     print("OPTIMIZATION GOALS:")

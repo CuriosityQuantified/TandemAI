@@ -22,7 +22,7 @@ Successfully implemented Phases 4-7 of the evaluation framework for comparing re
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/judge_agents.py`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/judge_agents.py`
 
 Implemented 7 specialized ReAct judge agents using LangGraph:
 
@@ -90,7 +90,7 @@ StateGraph(JudgeState)
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/rubrics.py`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/rubrics.py`
 
 Defined detailed scoring criteria for each judge:
 
@@ -125,7 +125,7 @@ Defined detailed scoring criteria for each judge:
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/prompts/researcher/query_dataset.json`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/prompts/researcher/query_dataset.json`
 
 Created 32 diverse research queries:
 
@@ -170,7 +170,7 @@ Created 32 diverse research queries:
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/test_runner.py`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/test_runner.py`
 
 Built comprehensive orchestration system:
 
@@ -225,7 +225,7 @@ Built comprehensive orchestration system:
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/statistical_analysis.py`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/statistical_analysis.py`
 
 Implemented rigorous statistical testing using scipy:
 
@@ -298,7 +298,7 @@ else:
 
 ### Implementation
 
-**File**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/run_evaluation.py`
+**File**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/run_evaluation.py`
 
 Created comprehensive CLI tool:
 
@@ -460,7 +460,7 @@ answer_completeness, autonomy_score) with no regressions. Strong evidence for ad
 ## File Structure
 
 ```
-/Users/nicholaspate/Documents/01_Active/ATLAS/main/
+/Users/nicholaspate/Documents/01_Active/TandemAI/main/
 ├── evaluation/
 │   ├── README.md                  # Comprehensive documentation
 │   ├── rubrics.py                 # 7 evaluation rubrics (970 lines)

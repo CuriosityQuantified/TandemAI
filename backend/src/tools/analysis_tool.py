@@ -4,7 +4,7 @@ Delegates analysis tasks to analysis agents with structured prompts
 """
 
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Optional, Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ def get_factory():
         _factory = LettaAgentFactory()
     return _factory
 
-def delegate_analysis(context: str, task_description: str, restrictions: str = "") -> Dict[str, Any]:
+def delegate_analysis(context: str, task_description: str, restrictions: str = "") -> dict:
     """
     Delegate analysis task to analysis agent using structured XML prompts.
 
@@ -89,7 +89,7 @@ def delegate_analysis(context: str, task_description: str, restrictions: str = "
             "delegated_at": datetime.now().isoformat()
         }
 
-def get_analysis_status(agent_id: str) -> Dict[str, Any]:
+def get_analysis_status(agent_id: str) -> dict:
     """
     Get the current status of an analysis agent's task.
 

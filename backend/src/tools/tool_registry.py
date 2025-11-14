@@ -3,11 +3,12 @@ Tool Registry for ATLAS Agents
 Defines and registers tools that Letta agents can use
 """
 
-from typing import List, Dict, Any, Callable
+from typing import List, Any, Callable
 from src.tools import planning_tool, todo_tool, file_tool
 from src.tools import research_tool, analysis_tool, writing_tool
+from src.tools import firecrawl_tool, e2b_tool
 
-def get_supervisor_tools() -> List[Dict[str, Any]]:
+def get_supervisor_tools() -> List[dict]:
     """
     Returns the list of tools available to the supervisor agent.
 
@@ -88,7 +89,7 @@ def get_supervisor_tools() -> List[Dict[str, Any]]:
     return tools
 
 
-def get_research_tools() -> List[Dict[str, Any]]:
+def get_research_tools() -> List[dict]:
     """
     Returns the list of tools available to the research agent.
 
@@ -142,16 +143,33 @@ def get_research_tools() -> List[Dict[str, Any]]:
             "description": "List available research files in the session directory.",
         },
 
-        # TODO: Add Firecrawl tools when available
-        # - web_search: Search the web for information
-        # - scrape_url: Extract content from specific URLs
-        # - crawl_site: Systematically crawl a website
+        # Firecrawl Web Research Tools
+        {
+            "function": firecrawl_tool.web_search,
+            "name": "web_search",
+            "description": "Search the web for information. Returns titles, URLs, and snippets from top results.",
+        },
+        {
+            "function": firecrawl_tool.scrape_webpage,
+            "name": "scrape_webpage",
+            "description": "Extract full content from a specific webpage in markdown format for analysis.",
+        },
+        {
+            "function": firecrawl_tool.batch_scrape_urls,
+            "name": "batch_scrape",
+            "description": "Scrape multiple URLs efficiently with rate limiting. Useful for comprehensive research.",
+        },
+        {
+            "function": firecrawl_tool.search_and_summarize,
+            "name": "search_and_summarize",
+            "description": "Search the web and provide summaries of the results. Combines search with content extraction.",
+        },
     ]
 
     return tools
 
 
-def get_analysis_tools() -> List[Dict[str, Any]]:
+def get_analysis_tools() -> List[dict]:
     """
     Returns the list of tools available to the analysis agent.
 
@@ -205,16 +223,33 @@ def get_analysis_tools() -> List[Dict[str, Any]]:
             "description": "Add incremental analysis results to an existing report.",
         },
 
-        # TODO: Add E2B tools when available
-        # - execute_code: Run Python code for data analysis
-        # - create_visualization: Generate charts and graphs
-        # - statistical_analysis: Perform statistical calculations
+        # E2B Code Execution Tools
+        {
+            "function": e2b_tool.run_python_code,
+            "name": "run_python_code",
+            "description": "Execute Python code safely in a sandbox. Use for data analysis, calculations, and visualization.",
+        },
+        {
+            "function": e2b_tool.run_javascript_code,
+            "name": "run_javascript_code",
+            "description": "Execute JavaScript code in a sandbox. Use for web-related analysis or Node.js scripts.",
+        },
+        {
+            "function": e2b_tool.run_r_code,
+            "name": "run_r_code",
+            "description": "Execute R statistical code in a sandbox. Use for statistical analysis and data science.",
+        },
+        {
+            "function": e2b_tool.run_code_with_files,
+            "name": "run_code_with_data",
+            "description": "Execute code with input data files. Load CSV, JSON, or text files for analysis.",
+        },
     ]
 
     return tools
 
 
-def get_writing_tools() -> List[Dict[str, Any]]:
+def get_writing_tools() -> List[dict]:
     """
     Returns the list of tools available to the writing agent.
 

@@ -19,6 +19,7 @@ export default function CopilotProvider({
         // Add any authentication headers if needed
         "X-Task-ID": "default", // This will be dynamic in production
       }}
+      showDevConsole={true} // Enable debug console for troubleshooting
     >
       <CopilotSidebar
         labels={{

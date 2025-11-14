@@ -4,16 +4,16 @@ Decomposes complex tasks into manageable sub-tasks using LLM reasoning
 Supports namespace isolation for multi-agent systems
 """
 
-from typing import Dict, List, Any, Optional
+from typing import List, Optional
 import json
 import os
 from datetime import datetime
 
 # Global storage with namespace isolation for multi-agent support
-_plan_stores: Dict[str, List[Dict]] = {}
+_plan_stores: dict = {}
 
-def plan_task(task_description: str, context: str = "", agent_memory: Optional[str] = None,
-              agent_namespace: Optional[str] = None) -> Dict[str, Any]:
+def plan_task(task_description: str, context: str = "", agent_memory: str = "",
+              agent_namespace: str = "") -> dict:
     """
     Decomposes a complex task into a structured plan with sub-tasks.
 
@@ -36,7 +36,7 @@ def plan_task(task_description: str, context: str = "", agent_memory: Optional[s
     """
 
     # Determine namespace (default to supervisor)
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     if namespace not in _plan_stores:
         _plan_stores[namespace] = []
 
@@ -147,8 +147,8 @@ def plan_task(task_description: str, context: str = "", agent_memory: Optional[s
 
         return plan
 
-def update_plan(plan_id: str, updates: Dict[str, Any], feedback: str = "",
-                agent_namespace: Optional[str] = None) -> Dict[str, Any]:
+def update_plan(plan_id: str, updates: dict, feedback: str = "",
+                agent_namespace: str = "") -> dict:
     """
     Updates an existing plan based on execution feedback.
 
@@ -163,7 +163,7 @@ def update_plan(plan_id: str, updates: Dict[str, Any], feedback: str = "",
     """
 
     # Determine namespace
-    namespace = agent_namespace or "supervisor"
+    namespace = agent_namespace if agent_namespace else "supervisor"
     try:
         from src.utils.call_model import call_model
 
@@ -225,7 +225,7 @@ def update_plan(plan_id: str, updates: Dict[str, Any], feedback: str = "",
             "llm_assisted": False
         }
 
-def evaluate_plan_progress(plan_id: str) -> Dict[str, Any]:
+def evaluate_plan_progress(plan_id: str) -> dict:
     """
     Evaluates the current progress of a plan.
 

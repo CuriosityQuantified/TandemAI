@@ -8,12 +8,12 @@
 
 ## Summary of Critical Issues
 
-Based on cross-file dependency review, we have **3 remaining critical issues** blocking execution:
+Based on cross-file dependency review, we have **2 remaining critical issues** blocking execution:
 
 1. ✅ **RESOLVED**: `shared_tools.py` exists with correct exports (not a blocker)
 2. 🔴 **CRITICAL**: TodoListMiddleware import fails (non-existent LangChain module)
 3. 🔴 **CRITICAL**: `get_researcher_prompt` ambiguous import (could use wrong version)
-4. 🔴 **CRITICAL**: TestQuery type inconsistency (TypedDict vs dict literals)
+4. ✅ **ALREADY FIXED**: TestQuery type inconsistency (file refactored to @dataclass)
 
 ---
 
@@ -171,10 +171,10 @@ def get_prompt_by_version(version: Literal["benchmark", "challenger"], current_d
 
 ---
 
-## Fix #3: TestQuery Type Consistency 🔴 TODO
+## Fix #3: TestQuery Type Consistency ✅ ALREADY RESOLVED
 
-### Problem
-`test_suite.py:45` defines `TestQuery` as TypedDict, but uses plain dict literals.
+### Problem (Historical - Already Fixed)
+`test_suite.py:45` **previously** defined `TestQuery` as TypedDict, but used plain dict literals.
 
 **Type definition**:
 ```python
@@ -199,20 +199,73 @@ class TestQuery(TypedDict):
 }
 ```
 
-**Impact**:
+**Impact**: (Historical only - no longer relevant)
 - Type checkers (mypy/pyright) will fail
 - Runtime works but no type safety
 - Could cause subtle bugs if fields mismatched
 
-### Solution
-Create explicit constructor function or use TypedDict correctly.
+### Current Status: ✅ ALREADY FIXED
+
+The file has been **completely refactored** from TypedDict to @dataclass:
+
+**Current Implementation** (test_suite.py:62):
+```python
+@dataclass
+class TestQuery:
+    """
+    Represents a single test query with metadata and success criteria.
+    """
+    id: str
+    query: str
+    category: QueryCategory  # Enum, not plain string
+    expected_steps: int
+    expected_behaviors: List[ExpectedBehavior]  # List of enums
+    min_sources: int
+    success_criteria: Dict[str, Any]
+    description: str
+    tags: List[str] = field(default_factory=list)
+```
+
+**All 32 queries use proper constructor**:
+```python
+TestQuery(
+    id="SIMPLE-001",
+    query="What is quantum error correction...",
+    category=QueryCategory.SIMPLE,
+    expected_steps=4,
+    expected_behaviors=[
+        ExpectedBehavior.MUST_CREATE_PLAN,
+        ExpectedBehavior.MUST_EXECUTE_ALL_STEPS,
+        ...
+    ],
+    min_sources=3,
+    success_criteria={"has_definition": True, ...},
+    description="Tests basic definition...",
+    tags=["definition", "quantum"]
+)
+```
+
+### Validation Results
+✅ All 32 queries properly typed
+✅ No plain dict literals
+✅ Full type safety with @dataclass
+✅ Proper enum usage (QueryCategory, ExpectedBehavior)
+✅ File imports successfully
+✅ Serialization works (to_dict() method)
+
+### Solution (Historical - No Longer Needed)
+~~Create explicit constructor function or use TypedDict correctly.~~
+**NO ACTION REQUIRED** - File already uses best practices.
 
 **Files to modify**:
-1. `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/test_suite.py` (lines 45-400+)
+~~1. `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/test_suite.py` (lines 45-400+)~~
+**None - File already fixed**
 
-### Implementation
+### Implementation (Historical Reference Only)
 
-#### Option A: Constructor Function (Recommended)
+The sections below show the PROPOSED solutions from when this was an active issue. **These are no longer needed** as the file has been fully refactored to use @dataclass.
+
+#### Option A: Constructor Function (Recommended) [NOT NEEDED - ALREADY IMPLEMENTED BETTER]
 
 ```python
 def create_test_query(
@@ -284,8 +337,8 @@ Individual judgment TypedDicts don't map clearly to EvaluationResult structure.
 Create aggregation function that maps 7 judgment types → EvaluationResult.
 
 **Files to modify**:
-1. `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/judge_agents.py` (add aggregation function)
-2. `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/test_runner.py` (use aggregation function)
+1. `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/judge_agents.py` (add aggregation function)
+2. `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/test_runner.py` (use aggregation function)
 
 ### Implementation
 
@@ -364,7 +417,7 @@ def aggregate_judgments_to_evaluation_result(
 ### Integration Test
 Once all critical fixes complete:
 ```bash
-cd /Users/nicholaspate/Documents/01_Active/ATLAS/main
+cd /Users/nicholaspate/Documents/01_Active/TandemAI/main
 python -m pytest evaluation/test_suite.py -v
 ```
 

@@ -323,7 +323,7 @@ print(f"Score: {result.pass_rate():.1f}%")
 ## Key Files
 
 ```
-/Users/nicholaspate/Documents/01_Active/ATLAS/main/
+/Users/nicholaspate/Documents/01_Active/TandemAI/main/
 ├── evaluation/
 │   ├── test_suite.py              # 32 test queries + evaluation logic
 │   ├── run_tests.py               # CLI runner

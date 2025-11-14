@@ -6,7 +6,7 @@ Session-scoped file operations - all files automatically organized by chat sessi
 import os
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Optional, List
 from datetime import datetime
 
 # Base directory for agent outputs (configurable)
@@ -66,9 +66,9 @@ def save_output(
     filename: str,
     content: str,
     file_type: str = "text",
-    subdirectory: Optional[str] = None,
-    metadata: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    subdirectory: str = "",
+    metadata: dict = None
+) -> dict:
     """
     Save content to a file in the session directory.
 
@@ -135,8 +135,8 @@ def save_output(
 
 def load_file(
     filename: str,
-    subdirectory: Optional[str] = None
-) -> Dict[str, Any]:
+    subdirectory: str = ""
+) -> dict:
     """
     Load content from a file in the session directory.
 
@@ -195,9 +195,9 @@ def load_file(
         }
 
 def list_outputs(
-    subdirectory: Optional[str] = None,
-    file_type: Optional[str] = None
-) -> List[Dict[str, Any]]:
+    subdirectory: str = "",
+    file_type: str = ""
+) -> list:
     """
     List all files in the session directory.
 
@@ -253,8 +253,8 @@ def list_outputs(
 def append_content(
     filename: str,
     content: str,
-    subdirectory: Optional[str] = None
-) -> Dict[str, Any]:
+    subdirectory: str = ""
+) -> dict:
     """
     Append content to an existing file in the session directory.
 

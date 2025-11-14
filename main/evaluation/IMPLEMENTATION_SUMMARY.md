@@ -322,7 +322,7 @@ The test suite aligns with LangChain's testing patterns:
 
 ### Import Test
 ```bash
-cd /Users/nicholaspate/Documents/01_Active/ATLAS/main
+cd /Users/nicholaspate/Documents/01_Active/TandemAI/main
 python -c "from evaluation.test_suite import TEST_QUERIES; print(f'Loaded {len(TEST_QUERIES)} tests')"
 ```
 **Result**: ✅ Successfully loads 32 tests

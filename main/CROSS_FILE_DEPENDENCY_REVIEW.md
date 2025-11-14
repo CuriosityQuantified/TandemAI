@@ -186,8 +186,8 @@ from backend.prompts.researcher import get_researcher_prompt
 ### 🔴 Critical: TestQuery Structure Inconsistency
 
 **Location**:
-- **Definition 1**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/test_suite.py:45-62`
-- **Usage**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/judge_agents.py:115-180`
+- **Definition 1**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/test_suite.py:45-62`
+- **Usage**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/judge_agents.py:115-180`
 
 **Issue**:
 
@@ -263,8 +263,8 @@ SIMPLE_QUERIES = [
 ### 🟠 High: EvaluationResult Structure Duplication
 
 **Location**:
-- **Definition 1**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/test_suite.py:65-89` (EvaluationResult TypedDict)
-- **Definition 2**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/evaluation/judge_agents.py:64-88` (Individual judge TypedDicts)
+- **Definition 1**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/test_suite.py:65-89` (EvaluationResult TypedDict)
+- **Definition 2**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/evaluation/judge_agents.py:64-88` (Individual judge TypedDicts)
 
 **Issue**:
 
@@ -603,7 +603,7 @@ env_path = find_project_root() / ".env"
 ### 🟠 High: get_researcher_prompt Signature Mismatch
 
 **Location**:
-- **Definition**: `/Users/nicholaspate/Documents/01_Active/ATLAS/main/prompts/researcher/benchmark_researcher_prompt.py:700-715`
+- **Definition**: `/Users/nicholaspate/Documents/01_Active/TandemAI/main/prompts/researcher/benchmark_researcher_prompt.py:700-715`
 - **Usage**: `/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/test_configs/test_config_1_with_todomiddleware.py:230`
 
 **Issue**:
@@ -659,7 +659,7 @@ researcher_system_prompt = get_benchmark_prompt(current_date)
 ### Import Dependency Graph
 
 ```
-ATLAS/main/ project:
+TandemAI/main/ project:
 ├── evaluation/
 │   ├── test_suite.py
 │   │   └── Imported by: run_tests.py, test_runner.py

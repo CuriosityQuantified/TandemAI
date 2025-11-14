@@ -33,8 +33,8 @@ This evaluation framework provides **32+ diverse test queries** across **4 categ
 ### Installation
 
 ```bash
-# Ensure you're in the ATLAS main directory
-cd /Users/nicholaspate/Documents/01_Active/ATLAS/main/
+# Ensure you're in the TandemAI main directory
+cd /Users/nicholaspate/Documents/01_Active/TandemAI/main/
 
 # Activate virtual environment
 source /Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.venv/bin/activate

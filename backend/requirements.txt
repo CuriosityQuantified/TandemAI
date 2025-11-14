@@ -18,14 +18,21 @@ neo4j>=5.0.0     # Graph database driver
 
 # Agent & AI Framework
 langchain>=0.1.0
+langchain-openai>=0.0.5  # ChatOpenAI for LangChain v1 alpha
+langchain-anthropic>=0.1.0  # Claude fallback option
+langchain-groq>=0.1.0  # Groq for ultra-fast inference
 langgraph>=0.0.40
 anthropic
 openai>=1.0.0
 groq
 google-generativeai  # Google Gemini models
-letta>=0.11.0        # Letta server and CLI commands
-letta-client>=0.1.0  # Official Letta client SDK for agent framework
-sqlite-vec>=0.1.0    # SQLite vector extension for Letta
+deepagents  # Deep Agents library for hierarchical agents
+tavily-python>=0.3.0  # Tavily web search API
+
+# MIGRATION NOTE: Letta dependencies commented out - migrated to LangChain
+# letta>=0.11.0        # Letta server and CLI commands (DEPRECATED)
+# letta-client>=0.1.0  # Official Letta client SDK (DEPRECATED)
+# sqlite-vec>=0.1.0    # SQLite vector extension for Letta (DEPRECATED)
 
 # Tool-Based Architecture Dependencies
 # helix-db>=0.1.0       # TODO: Phase 5 - Will implement custom knowledge storage

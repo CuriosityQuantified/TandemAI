@@ -30,6 +30,28 @@ class ATLASMLflowTracker:
         # Cost calculation function available as get_cost_and_pricing_details
         self.current_run = None
 
+    def log_metric(self, key: str, value: float, step: Optional[int] = None):
+        """Log a single metric to the active MLflow run."""
+        if mlflow.active_run():
+            mlflow.log_metric(key, value, step=step)
+
+    def track_agent_creation(self, agent_id: str, agent_type: str, tools: List[str], model_config: Dict[str, Any]):
+        """Track agent creation with configuration."""
+        if mlflow.active_run():
+            mlflow.log_params({
+                "agent_id": agent_id,
+                "agent_type": agent_type,
+                "tool_count": len(tools)
+            })
+
+            # Log tools as artifact
+            tools_json = json.dumps(tools, indent=2)
+            mlflow.log_text(tools_json, artifact_file="tools_available.json")
+
+            # Log model config as artifact
+            config_json = json.dumps(model_config, indent=2)
+            mlflow.log_text(config_json, artifact_file="model_config.json")
+
     def start_task_run(self, task_id: str, task_metadata: Dict[str, Any]) -> str:
         """
         Starts a new parent run for a complete ATLAS task.
@@ -423,7 +445,7 @@ class ATLASMLflowTracker:
                 "error_type": error_type,
                 "error_message": error_message[:100]  # Truncate long messages
             })
-            
+
             # Log context as artifact
             context_json = json.dumps(error_context, indent=2)
             mlflow.log_text(context_json, artifact_file="error_context.json")
@@ -434,7 +456,106 @@ class ATLASMLflowTracker:
                     "error_type": error_type,
                     "error_message": error_message[:100]  # Truncate long messages
                 })
-                
+
                 # Log context as artifact
                 context_json = json.dumps(error_context, indent=2)
                 mlflow.log_text(context_json, artifact_file="error_context.json")
+
+    def track_tool_invocation(
+        self,
+        agent_id: str,
+        tool_name: str,
+        parameters: Dict[str, Any],
+        result: Any,
+        success: bool,
+        duration_ms: float
+    ) -> None:
+        """
+        Track tool invocation with comprehensive metrics and parameters.
+
+        This method logs detailed information about tool usage including:
+        - Performance metrics (duration, success rate)
+        - Tool-specific parameters for debugging
+        - Result data for quality analysis
+        - Tags for filtering and analytics
+
+        Args:
+            agent_id: ID of the agent invoking the tool
+            tool_name: Name of the tool being invoked
+            parameters: Dictionary of parameters passed to the tool
+            result: Result returned by the tool (will be serialized)
+            success: Whether the tool invocation succeeded
+            duration_ms: Execution time in milliseconds
+        """
+        # Get or create experiment for this agent
+        experiment_name = f"ATLAS_Agent_{agent_id}"
+        try:
+            mlflow.set_experiment(experiment_name)
+        except Exception:
+            # Experiment might already exist
+            pass
+
+        # Check if we have an active run, otherwise this is a standalone log
+        active_run = mlflow.active_run()
+
+        if active_run:
+            # We're within an active run context - log directly
+            self._log_tool_metrics(tool_name, parameters, result, success, duration_ms)
+        else:
+            # No active run - create a nested tool run
+            with mlflow.start_run(run_name=f"tool_{tool_name}", nested=True):
+                self._log_tool_metrics(tool_name, parameters, result, success, duration_ms)
+
+    def _log_tool_metrics(
+        self,
+        tool_name: str,
+        parameters: Dict[str, Any],
+        result: Any,
+        success: bool,
+        duration_ms: float
+    ):
+        """
+        Internal method to log tool metrics to the current MLflow run.
+
+        Args:
+            tool_name: Name of the tool
+            parameters: Tool parameters
+            result: Tool result
+            success: Success status
+            duration_ms: Execution duration
+        """
+        # Log performance metrics
+        mlflow.log_metrics({
+            f"tool_{tool_name}_duration_ms": duration_ms,
+            f"tool_{tool_name}_success": 1.0 if success else 0.0,
+            "tool_invocation_count": 1,
+            "tool_total_duration_ms": duration_ms
+        })
+
+        # Log tool name as parameter for filtering
+        mlflow.log_param("tool_name", tool_name)
+        mlflow.log_param("tool_success", success)
+
+        # Set tags for easier filtering in MLflow UI
+        mlflow.set_tag(f"atlas.tool.{tool_name}", "invoked")
+        mlflow.set_tag(f"atlas.tool.success", str(success))
+
+        # Log parameters as artifact (can be complex objects)
+        if parameters:
+            try:
+                params_json = json.dumps(parameters, indent=2, default=str)
+                mlflow.log_text(params_json, artifact_file=f"tool_{tool_name}_params.json")
+            except Exception as e:
+                # If serialization fails, log the error
+                mlflow.log_text(f"Failed to serialize parameters: {str(e)}",
+                              artifact_file=f"tool_{tool_name}_params_error.txt")
+
+        # Log result as artifact (can be complex objects)
+        if result is not None:
+            try:
+                result_json = json.dumps(result, indent=2, default=str)
+                mlflow.log_text(result_json, artifact_file=f"tool_{tool_name}_result.json")
+            except Exception as e:
+                # If serialization fails, log the result as string
+                result_str = str(result)[:10000]  # Limit to 10KB
+                mlflow.log_text(result_str, artifact_file=f"tool_{tool_name}_result.txt")

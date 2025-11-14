@@ -1,15 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCopilotAction, useCopilotChat } from '@copilotkit/react-core';
 
 export default function POCPage() {
   const [taskResult, setTaskResult] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [eventSource, setEventSource] = useState<EventSource | null>(null);
+
+  // Use the copilot chat hook to append messages
+  const { appendMessage } = useCopilotChat();
+
+  // Clean up SSE connection on unmount
+  useEffect(() => {
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [eventSource]);
 
   // Register a CopilotKit action for task execution
   useCopilotAction({
-    name: "execute_task",
+    name: "executeTask",
     description: "Execute a complex task using the ATLAS agent hierarchy",
     parameters: [
       {
@@ -20,79 +33,178 @@ export default function POCPage() {
       },
     ],
     handler: async ({ query }) => {
+      console.log("Executing task:", query);
       setIsProcessing(true);
       setTaskResult(null);
 
       try {
-        const response = await fetch('/api/copilotkit', {
+        // Call our backend API directly
+        const response = await fetch('/api/tasks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Task-ID': `task_${Date.now()}`,
           },
           body: JSON.stringify({
-            action: 'execute_task',
-            parameters: { query },
+            description: query,
+            type: 'general',
           }),
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorText = await response.text();
+          console.error('Backend error response:', errorText);
+          throw new Error(`Backend error: ${response.statusText}`);
         }
 
-        // Handle streaming response
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
+        const data = await response.json();
+        setTaskResult(data);
 
-        if (reader) {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+        // Set up SSE connection for real-time agent updates
+        if (data.task_id) {
+          const sse = new EventSource(`/api/agui/stream/${data.task_id}`);
 
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
+          sse.onmessage = (event) => {
+            try {
+              const eventData = JSON.parse(event.data);
+              console.log('AG-UI Event received:', eventData);
 
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                try {
-                  const data = JSON.parse(line.slice(6));
-                  if (data.type === 'result') {
-                    setTaskResult(data.data);
+              // Handle different event types - check both 'type' and 'event_type'
+              const eventType = eventData.type || eventData.event_type;
+
+              // Extract content from various possible locations
+              const content = eventData.content?.data ||
+                            eventData.data?.content ||
+                            eventData.data?.message ||
+                            eventData.message ||
+                            eventData.text;
+
+              // Extract agent ID
+              const agentId = eventData.agent_id || eventData.data?.agent_id || 'Supervisor';
+
+              console.log('Event type:', eventType, 'Content:', content);
+
+              // Handle different event types and stream to CopilotKit
+              if (eventType === 'dialogue_update' || eventType === 'AGENT_DIALOGUE_UPDATE') {
+                if (content) {
+                  // Check for reasoning vs assistant messages
+                  const messageType = eventData.content?.type || eventData.data?.type || 'text';
+
+                  if (messageType === 'reasoning') {
+                    // Show internal reasoning with special formatting
+                    appendMessage({
+                      role: 'assistant',
+                      content: `💭 [Thinking]: ${content}`,
+                    });
+                  } else {
+                    // Show agent response
+                    appendMessage({
+                      role: 'assistant',
+                      content: `[${agentId}]: ${content}`,
+                    });
                   }
-                } catch (e) {
-                  // Ignore parsing errors for incomplete chunks
                 }
+              } else if (eventType === 'tool_call_initiated' || eventType === 'TOOL_CALL_INITIATED') {
+                const toolName = eventData.tool_name || eventData.data?.tool_name;
+                if (toolName) {
+                  appendMessage({
+                    role: 'assistant',
+                    content: `🔧 Using tool: ${toolName}`,
+                  });
+                }
+              } else if (eventType === 'agent_message_sent' || eventType === 'AGENT_MESSAGE_SENT') {
+                const targetAgent = eventData.target_agent || eventData.data?.target_agent;
+                appendMessage({
+                  role: 'assistant',
+                  content: `📤 Delegating to ${targetAgent}: ${content || 'Processing task...'}`,
+                });
+              } else if (eventType === 'task_progress' || eventType === 'TASK_PROGRESS') {
+                const progress = eventData.data?.progress_percentage || 0;
+                appendMessage({
+                  role: 'system',
+                  content: `📊 Progress: ${progress}% - ${content || 'Processing...'}`,
+                });
+              } else if (eventType === 'task_completed' || eventType === 'TASK_COMPLETED') {
+                appendMessage({
+                  role: 'assistant',
+                  content: `✅ Task completed: ${eventData.data?.result_summary || content || 'Successfully processed'}`,
+                });
+              } else if (eventType === 'error' || eventType === 'AGENT_ERROR') {
+                const errorMessage = eventData.error_message || eventData.data?.error_message || content;
+                appendMessage({
+                  role: 'system',
+                  content: `❌ Error: ${errorMessage}`,
+                });
+              } else if (eventType === 'connection_established' || eventType === 'ping') {
+                // Ignore connection and ping events
+                console.log('SSE connection event:', eventType);
+              } else {
+                // Log unknown event types for debugging
+                console.log('Unhandled AG-UI event type:', eventType, eventData);
               }
+            } catch (err) {
+              console.error('Error parsing SSE event:', err, event.data);
             }
-          }
+          };
+
+          sse.onerror = (error) => {
+            console.error('SSE error:', error);
+            sse.close();
+          };
+
+          setEventSource(sse);
         }
+
+        return {
+          success: true,
+          taskId: data.task_id,
+          message: `Task created: ${data.message}`,
+        };
       } catch (error) {
         console.error('Error executing task:', error);
-        setTaskResult({ error: 'Failed to execute task' });
+        const errorResult = {
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to execute task"
+        };
+        setTaskResult(errorResult);
+        return errorResult;
       } finally {
         setIsProcessing(false);
       }
+    },
+  });
 
-      return "Task execution initiated. Results will appear below.";
+  // Add agent status action
+  useCopilotAction({
+    name: "getAgentStatus",
+    description: "Get the current status of all agents",
+    parameters: [],
+    handler: async () => {
+      try {
+        const response = await fetch('/api/agents');
+        if (!response.ok) {
+          throw new Error(`Backend error: ${response.statusText}`);
+        }
+        const agents = await response.json();
+        return {
+          success: true,
+          agents,
+        };
+      } catch (error) {
+        console.error("Error getting agent status:", error);
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
     },
   });
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="h-screen bg-gray-900 text-white overflow-y-auto">
+      <div className="max-w-6xl mx-auto p-8">
         <h1 className="text-4xl font-bold mb-8 text-blue-400">
           ATLAS POC - Multi-Agent Task Execution
         </h1>
-
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-semibold mb-4">How to Use:</h2>
-          <ol className="list-decimal list-inside space-y-2">
-            <li>Open the CopilotKit sidebar (button in bottom-right)</li>
-            <li>Type a complex task or question</li>
-            <li>The system will decompose it and coordinate agents</li>
-            <li>Results will appear below</li>
-          </ol>
-        </div>
 
         <div className="bg-gray-800 rounded-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">Agent Hierarchy:</h2>

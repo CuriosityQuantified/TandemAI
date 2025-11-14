@@ -1,0 +1,79 @@
+{
+  "configuration": {
+    "num_queries": 32,
+    "num_judges": 7,
+    "num_evaluations": 224
+  },
+  "scenarios": {
+    "haiku_baseline": {
+      "name": "Haiku 3.5 without caching",
+      "researcher_cost": 0.295736,
+      "judge_cost": 0.3528,
+      "total_cost": 0.648536
+    },
+    "haiku_cached": {
+      "name": "Haiku 3.5 with caching (RECOMMENDED)",
+      "researcher_cost": 0.24722877499999998,
+      "judge_cost": 0.32088,
+      "total_cost": 0.568108775,
+      "savings_vs_baseline": 0.08042722499999999,
+      "savings_pct": 12.401350888771015
+    },
+    "sonnet_cached": {
+      "name": "Sonnet 3.5 with caching",
+      "researcher_cost": 2.9678353500000005,
+      "judge_cost": 3.8551199999999994,
+      "total_cost": 6.82295535
+    }
+  },
+  "optimization_strategies": [
+    {
+      "name": "Prompt Caching (Researcher)",
+      "savings_pct": 40.0,
+      "effort": "Low",
+      "affects_quality": false
+    },
+    {
+      "name": "Prompt Caching (Judges)",
+      "savings_pct": 15.0,
+      "effort": "Low",
+      "affects_quality": false
+    },
+    {
+      "name": "Use Haiku for All Agents",
+      "savings_pct": 90.0,
+      "effort": "Low",
+      "affects_quality": true
+    },
+    {
+      "name": "Batch API (if available)",
+      "savings_pct": 50.0,
+      "effort": "Medium",
+      "affects_quality": false
+    },
+    {
+      "name": "Sample-Based Testing",
+      "savings_pct": 68.75,
+      "effort": "Low",
+      "affects_quality": true
+    },
+    {
+      "name": "Optimize Benchmark Prompt",
+      "savings_pct": 31.0,
+      "effort": "High",
+      "affects_quality": false
+    },
+    {
+      "name": "Parallel Judge Execution",
+      "savings_pct": 0,
+      "effort": "Low",
+      "affects_quality": false
+    },
+    {
+      "name": "LangSmith Monitoring",
+      "savings_pct": 5.0,
+      "effort": "Low",
+      "affects_quality": false
+    }
+  ]
+}

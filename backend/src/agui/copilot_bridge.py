@@ -10,8 +10,10 @@ from datetime import datetime
 
 from .events import AGUIEvent, AGUIEventType
 from .server import AGUIConnectionManager
+from .tool_events import set_agui_manager
 from ..agents.supervisor import Supervisor as GlobalSupervisorAgent
 from ..mlflow.tracking import ATLASMLflowTracker
+from ..tools.file_tool import initialize_session
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +24,9 @@ class CopilotKitBridge:
         self.agui_manager = agui_manager
         self.active_agents: Dict[str, GlobalSupervisorAgent] = {}
         self.mlflow_tracker = ATLASMLflowTracker()
+
+        # Set the global AG-UI manager for tool event broadcasting
+        set_agui_manager(agui_manager)
 
     async def handle_copilot_action(self, request: Request) -> Response:
         """Handle CopilotKit action requests and translate to AG-UI events."""
@@ -40,6 +45,8 @@ class CopilotKitBridge:
             # Handle different action types
             if action_name == "execute_task":
                 return await self.execute_task(task_id, parameters)
+            elif action_name == "execute_with_tools":
+                return await self.execute_with_tools(task_id, parameters)
             elif action_name == "get_agent_status":
                 return await self.get_agent_status(task_id)
             elif action_name == "cancel_task":
@@ -58,7 +65,7 @@ class CopilotKitBridge:
             )
 
     async def execute_task(self, task_id: str, parameters: Dict[str, Any]) -> Response:
-        """Execute a task through the agent hierarchy."""
+        """Execute a task through the agent hierarchy with streaming support."""
 
         query = parameters.get("query", "")
 
@@ -68,13 +75,17 @@ class CopilotKitBridge:
                 status_code=400
             )
 
+        # Initialize session directory for file operations
+        session_path = initialize_session(task_id)
+        logger.info(f"Initialized session directory: {session_path}")
+
         # Create or get the supervisor agent
         if task_id not in self.active_agents:
             self.active_agents[task_id] = GlobalSupervisorAgent(
                 task_id=task_id,
-                mlflow_tracker=self.mlflow_tracker
+                mlflow_tracker=self.mlflow_tracker,
+                agui_manager=self.agui_manager
             )
-            self.active_agents[task_id].set_event_broadcaster(self.agui_manager)
 
         supervisor = self.active_agents[task_id]
 
@@ -94,11 +105,18 @@ class CopilotKitBridge:
         # Stream the response
         async def generate_response():
             try:
-                # Execute the task
-                result = await supervisor.orchestrate_task(query)
+                # Stream from supervisor
+                full_result = {"content": "", "tool_results": []}
 
-                # Stream intermediate results through Server-Sent Events format
-                yield f"data: {json.dumps({'type': 'result', 'data': result})}\n\n"
+                async for chunk in supervisor.send_message(query):
+                    # Forward chunk to frontend
+                    yield f"data: {json.dumps(chunk)}\n\n"
+
+                    # Accumulate results
+                    if chunk['type'] == 'content':
+                        full_result['content'] += chunk['data']['content']
+                    elif chunk['type'] == 'tool_result':
+                        full_result['tool_results'].append(chunk['data'])
 
                 # Broadcast completion
                 await self.agui_manager.broadcast_to_task(
@@ -106,12 +124,12 @@ class CopilotKitBridge:
                     AGUIEvent(
                         event_type=AGUIEventType.TASK_COMPLETED,
                         task_id=task_id,
-                        data=result
+                        data=full_result
                     )
                 )
 
             except Exception as e:
-                logger.error(f"Error executing task: {e}")
+                logger.error(f"Error executing task: {e}", exc_info=True)
                 yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
 
                 # Broadcast failure
@@ -148,17 +166,110 @@ class CopilotKitBridge:
 
         supervisor = self.active_agents[task_id]
 
-        # Gather agent status
-        status = {
-            "task_id": task_id,
-            "supervisor_id": supervisor.supervisor_id,
-            "sub_agents": list(supervisor.sub_agents.keys()),
-            "active": True
-        }
+        # Get agent status from LangChain supervisor
+        status = supervisor.get_status()
 
         return Response(
             content=json.dumps(status),
             status_code=200
+        )
+
+    async def execute_with_tools(self, task_id: str, parameters: Dict[str, Any]) -> Response:
+        """Execute a task with specific tools and stream tool events."""
+
+        query = parameters.get("query", "")
+        preferred_tools = parameters.get("tools", [])
+
+        if not query:
+            return Response(
+                content=json.dumps({"error": "Query is required"}),
+                status_code=400
+            )
+
+        # Initialize session directory
+        session_path = initialize_session(task_id)
+
+        # Create or get the supervisor agent
+        if task_id not in self.active_agents:
+            self.active_agents[task_id] = GlobalSupervisorAgent(
+                task_id=task_id,
+                mlflow_tracker=self.mlflow_tracker,
+                agui_manager=self.agui_manager
+            )
+
+        supervisor = self.active_agents[task_id]
+
+        # Start MLflow run
+        self.mlflow_tracker.start_run(run_name=f"task_{task_id}_tools")
+
+        # Broadcast task started event with tool preferences
+        await self.agui_manager.broadcast_to_task(
+            task_id,
+            AGUIEvent(
+                event_type=AGUIEventType.TASK_STARTED,
+                task_id=task_id,
+                data={
+                    "query": query,
+                    "preferred_tools": preferred_tools,
+                    "started_at": datetime.now().isoformat()
+                }
+            )
+        )
+
+        # Stream the response with tool events
+        async def generate_response():
+            try:
+                # Note: Tool preferences are handled by the LLM's tool selection
+                # The supervisor automatically calls the most appropriate tools
+
+                # Stream from supervisor
+                full_result = {"content": "", "tool_results": []}
+
+                async for chunk in supervisor.send_message(query):
+                    # Forward chunk to frontend
+                    yield f"data: {json.dumps(chunk)}\n\n"
+
+                    # Accumulate results
+                    if chunk['type'] == 'content':
+                        full_result['content'] += chunk['data']['content']
+                    elif chunk['type'] == 'tool_result':
+                        full_result['tool_results'].append(chunk['data'])
+
+                # Broadcast completion
+                await self.agui_manager.broadcast_to_task(
+                    task_id,
+                    AGUIEvent(
+                        event_type=AGUIEventType.TASK_COMPLETED,
+                        task_id=task_id,
+                        data=full_result
+                    )
+                )
+
+            except Exception as e:
+                logger.error(f"Error executing task with tools: {e}", exc_info=True)
+                yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
+
+                # Broadcast failure
+                await self.agui_manager.broadcast_to_task(
+                    task_id,
+                    AGUIEvent(
+                        event_type=AGUIEventType.TASK_FAILED,
+                        task_id=task_id,
+                        data={"error": str(e)}
+                    )
+                )
+            finally:
+                # End MLflow run
+                self.mlflow_tracker.end_run()
+
+        return StreamingResponse(
+            generate_response(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
         )
 
     async def cancel_task(self, task_id: str) -> Response:
@@ -172,7 +283,7 @@ class CopilotKitBridge:
 
         supervisor = self.active_agents[task_id]
 
-        # Clean up agents
+        # Clean up agents (async)
         await supervisor.cleanup()
 
         # Remove from active agents
