@@ -14,6 +14,7 @@ Architecture:
 Version: 1.0
 Created: 2025-11-13
 """
+from __future__ import annotations  # Enable lazy evaluation of type hints (fixes import hang)
 
 import os
 import json
@@ -23,7 +24,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # LangChain/LangGraph imports
-from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langchain_core.tools import tool
 from langgraph.graph import StateGraph, END, START
@@ -63,7 +64,7 @@ _JUDGE_DECISIONS: Dict[str, Any] = {}
 
 @tool
 def submit_planning_quality_score(
-    score: Literal[0.0, 1.0],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Planning Quality evaluation.
@@ -86,7 +87,7 @@ def submit_planning_quality_score(
 
 @tool
 def submit_execution_completeness_score(
-    score: Literal[1, 2, 3, 4, 5],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Execution Completeness evaluation.
@@ -109,7 +110,7 @@ def submit_execution_completeness_score(
 
 @tool
 def submit_source_quality_score(
-    score: Literal[1, 2, 3, 4, 5],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Source Quality evaluation.
@@ -132,7 +133,7 @@ def submit_source_quality_score(
 
 @tool
 def submit_citation_accuracy_score(
-    score: Literal[0.0, 1.0],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Citation Accuracy evaluation.
@@ -155,7 +156,7 @@ def submit_citation_accuracy_score(
 
 @tool
 def submit_answer_completeness_score(
-    score: Literal[1, 2, 3, 4, 5],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Answer Completeness evaluation.
@@ -178,7 +179,7 @@ def submit_answer_completeness_score(
 
 @tool
 def submit_factual_accuracy_score(
-    score: Literal[0.0, 1.0],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Factual Accuracy evaluation.
@@ -201,7 +202,7 @@ def submit_factual_accuracy_score(
 
 @tool
 def submit_autonomy_score(
-    score: Literal[0.0, 1.0],
+    score: int,
     reasoning: str
 ) -> str:
     """Submit final Autonomy evaluation.
@@ -284,23 +285,22 @@ REMEMBER:
 def create_judge_agent(
     rubric_name: str,
     submit_tool: Any,
-    model: ChatAnthropic | None = None
+    model: ChatGoogleGenerativeAI | None = None
 ) -> StateGraph:
     """Create a ReAct judge agent for a specific rubric.
 
     Args:
         rubric_name: Name of the rubric (e.g., "planning_quality")
         submit_tool: The submit_answer tool for this judge
-        model: Optional ChatAnthropic model (will create default if None)
+        model: Optional ChatGoogleGenerativeAI model (will create Gemini 2.5 Flash if None)
 
     Returns:
         Compiled StateGraph for the judge agent
     """
-    # Create model if not provided
+    # Create model if not provided (defaults to Gemini 2.5 Flash)
     if model is None:
-        model = ChatAnthropic(
-            model="claude-haiku-4-5-20251001",
-            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
+        model = ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
             temperature=0.0,  # Deterministic for consistent judging
         )
 
@@ -368,15 +368,14 @@ def create_judge_agent(
 class JudgeRegistry:
     """Registry of all judge agents."""
 
-    def __init__(self, model: ChatAnthropic | None = None):
+    def __init__(self, model: ChatGoogleGenerativeAI | None = None):
         """Initialize judge registry.
 
         Args:
-            model: Optional shared model for all judges (creates default if None)
+            model: Optional shared model for all judges (defaults to Gemini 2.5 Flash if None)
         """
-        self.model = model or ChatAnthropic(
-            model="claude-haiku-4-5-20251001",
-            anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"),
+        self.model = model or ChatGoogleGenerativeAI(
+            model="gemini-2.5-flash",
             temperature=0.0,
         )
 
@@ -488,11 +487,11 @@ Please evaluate this response according to your rubric and submit your score.
 # CONVENIENCE FUNCTIONS
 # ==============================================================================
 
-def create_all_judges(model: ChatAnthropic | None = None) -> JudgeRegistry:
+def create_all_judges(model: ChatGoogleGenerativeAI | None = None) -> JudgeRegistry:
     """Create all 7 judge agents.
 
     Args:
-        model: Optional shared model
+        model: Optional shared model (defaults to local Ollama if None)
 
     Returns:
         JudgeRegistry with all judges
@@ -504,7 +503,7 @@ def evaluate_response(
     query: str,
     response: str,
     rubric_name: str | None = None,
-    model: ChatAnthropic | None = None
+    model: ChatGoogleGenerativeAI | None = None
 ) -> Dict[str, Any]:
     """Convenience function to evaluate a response.
 
@@ -512,7 +511,7 @@ def evaluate_response(
         query: Research query
         response: Agent response
         rubric_name: Specific rubric (None = all)
-        model: Optional model
+        model: Optional model (defaults to local Ollama if None)
 
     Returns:
         Evaluation results
@@ -599,19 +598,19 @@ def aggregate_judgments_to_evaluation_result(
     # Binary scores (0.0 or 1.0)
     planning_score, planning_reasoning = get_judge_data('planning_quality')
     planning_quality = BinaryScore(
-        score=float(planning_score),
+        score=int(planning_score),
         reasoning=planning_reasoning
     )
 
     citation_score, citation_reasoning = get_judge_data('citation_accuracy')
     citation_accuracy = BinaryScore(
-        score=float(citation_score),
+        score=int(citation_score),
         reasoning=citation_reasoning
     )
 
     factual_score, factual_reasoning = get_judge_data('factual_accuracy')
     factual_accuracy = BinaryScore(
-        score=float(factual_score),
+        score=int(factual_score),
         reasoning=factual_reasoning
     )
 

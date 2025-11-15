@@ -474,9 +474,9 @@ class AutonomyScoreRubric(BaseModel):
 # ==============================================================================
 
 class BinaryScore(BaseModel):
-    """Binary evaluation score (0.0 or 1.0)."""
-    score: Literal[0.0, 1.0] = Field(
-        description="Binary score: 1.0 for positive criteria met, 0.0 otherwise"
+    """Binary evaluation score (0 or 1)."""
+    score: Literal[0, 1] = Field(
+        description="Binary score: 1 for positive criteria met, 0 otherwise"
     )
     reasoning: str = Field(
         description="Detailed explanation for the score with evidence from the response"
