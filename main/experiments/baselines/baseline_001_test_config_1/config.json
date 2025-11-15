@@ -1,0 +1,57 @@
+{
+  "baseline_id": "baseline_001",
+  "agent_type": "Researcher",
+  "timestamp": "2025-11-15T16:04:44",
+  "description": "Baseline evaluation for Researcher agent using test_config_1 with benchmark prompt V3",
+
+  "agent_configuration": {
+    "config_file": "test_config_1_deepagent_supervisor_command.py",
+    "prompt_file": "benchmark_researcher_prompt.py",
+    "prompt_version": "Enhanced V3",
+    "architecture": "DeepAgent-inspired supervisor with Command.goto routing",
+    "pattern": "Supervisor → Delegation Tools → Researcher"
+  },
+
+  "model_configuration": {
+    "researcher_model": "gemini-2.5-flash",
+    "judge_model": "gemini-2.5-flash",
+    "temperature": 0.7,
+    "recursion_limit": 50
+  },
+
+  "tools": [
+    "tavily_search",
+    "create_research_plan",
+    "update_plan_progress",
+    "read_current_plan",
+    "edit_plan"
+  ],
+
+  "evaluation_setup": {
+    "total_queries": 32,
+    "query_categories": {
+      "simple": 8,
+      "multi_aspect": 8,
+      "time_constrained": 8,
+      "comprehensive": 8
+    },
+    "judges": 7,
+    "total_evaluations": 224,
+    "rubrics": [
+      "planning_quality",
+      "execution_completeness",
+      "source_quality",
+      "citation_accuracy",
+      "answer_completeness",
+      "factual_accuracy",
+      "autonomy_score"
+    ]
+  },
+
+  "performance_estimates": {
+    "avg_time_per_evaluation_seconds": 5.7,
+    "estimated_total_runtime_minutes": 31,
+    "estimated_cost_per_evaluation": 0.000097,
+    "estimated_total_cost": 0.022
+  }
+}
