@@ -341,16 +341,23 @@ def create_citation_verifier_node():
     2. Calls verify_citations to check all quotes
     3. If verification passes → routes to END
     4. If verification fails → provides feedback and routes back to researcher
+    5. FIX #3: Prevents infinite loops by limiting verification attempts
 
     This eliminates reliance on the agent remembering to verify citations.
     The agent CAN still call verify_citations proactively if it wants to.
     """
+
+    # Track verification attempts to prevent infinite loops (Fix #3)
+    verification_attempts = {"count": 0, "session_start": None}
 
     def citation_verifier(state: MessagesState) -> Command[Literal["researcher", END]]:
         """
         Automatic citation verification with feedback loop.
 
         Extracts the last AI response, verifies citations, and routes accordingly.
+
+        FIX #2: Improved session ID extraction with multiple fallback methods
+        FIX #3: Citation count check to prevent infinite verification loops
         """
         messages = state["messages"]
 
@@ -375,8 +382,8 @@ def create_citation_verifier_node():
             else:
                 response_text = str(response_text)
 
-        # Extract session_id from the plan
-        # Look for plan creation in tool messages
+        # FIX #2: Improved session_id extraction with multiple fallback methods
+        # Method 1: Extract from plan creation
         session_id = None
         for msg in messages:
             if isinstance(msg, ToolMessage) and msg.name == "create_research_plan":
@@ -385,15 +392,43 @@ def create_citation_verifier_node():
                     plan_data = json.loads(msg.content)
                     session_id = plan_data.get("plan_id")
                     if session_id:
+                        print(f"\n🔍 Citation Verifier: Found session_id from plan: {session_id}")
                         break
                 except:
                     pass
 
+        # Method 2: Extract from tavily_search_cached calls
         if not session_id:
-            # Fallback: create a temporary session_id
+            for msg in messages:
+                if isinstance(msg, ToolMessage) and msg.name == "tavily_search_cached":
+                    try:
+                        import json
+                        result_data = json.loads(msg.content)
+                        session_id = result_data.get("_session_id")
+                        if session_id:
+                            print(f"\n🔍 Citation Verifier: Found session_id from tavily cache: {session_id}")
+                            break
+                    except:
+                        pass
+
+        # Method 3: Look for session_id in any tool call arguments
+        if not session_id:
+            for msg in messages:
+                if hasattr(msg, 'tool_calls') and msg.tool_calls:
+                    for tool_call in msg.tool_calls:
+                        args = tool_call.get("args", {})
+                        if "session_id" in args and args["session_id"]:
+                            session_id = args["session_id"]
+                            print(f"\n🔍 Citation Verifier: Found session_id from tool call args: {session_id}")
+                            break
+                    if session_id:
+                        break
+
+        # Method 4: Fallback to timestamp-based session_id
+        if not session_id:
             from datetime import datetime
             session_id = f"verify_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            print(f"\n⚠️  Citation Verifier: No plan_id found, using fallback: {session_id}")
+            print(f"\n⚠️  Citation Verifier: No session_id found in any source, using fallback: {session_id}")
 
         # Call verify_citations
         print(f"\n🔍 Citation Verifier: Automatically verifying citations...")
@@ -414,6 +449,44 @@ def create_citation_verifier_node():
             print(f"   Total citations: {total_citations}")
             print(f"   Verified: {verified_count}")
             print(f"   All verified: {all_verified}")
+
+            # FIX #3: Prevent infinite loops - track verification attempts
+            # Initialize or increment attempt counter
+            if verification_attempts["session_start"] != session_id:
+                # New session, reset counter
+                verification_attempts["session_start"] = session_id
+                verification_attempts["count"] = 1
+                print(f"   📊 Verification attempt: 1 (new session)")
+            else:
+                # Same session, increment
+                verification_attempts["count"] += 1
+                print(f"   📊 Verification attempt: {verification_attempts['count']}")
+
+            # FIX #3: If we've tried 3+ times and still finding 0 citations, force completion
+            if verification_attempts["count"] >= 3 and total_citations == 0:
+                print(f"\n⚠️  Citation Verifier: 3+ attempts with 0 citations found - forcing completion")
+                print(f"   This prevents infinite verification loops.")
+                print(f"   The researcher may not be following citation format correctly.")
+
+                # Create warning message for user
+                warning_msg = SystemMessage(content="""
+⚠️  CITATION VERIFICATION WARNING ⚠️
+
+After 3 verification attempts, the system is still finding 0 citations in your response.
+
+This usually means:
+1. You're not including quoted text in your citations
+2. You're missing the "## Sources" section at the end
+3. The citation format doesn't match the required pattern: [#] "exact quote" - Source - URL - Date
+
+The response will be allowed to complete, but citations are NOT verified.
+Please review the MANDATORY CITATION FORMAT section in your instructions.
+""")
+
+                return Command(
+                    goto=END,
+                    update={"messages": [warning_msg]}
+                )
 
             if all_verified:
                 # ✅ All citations verified - allow completion
