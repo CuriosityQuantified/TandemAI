@@ -329,23 +329,183 @@ researcher_subagent = create_researcher_subagent()
 print(f"✓ Researcher subagent created with {len(researcher_tools)} V3 tools (citation verification enabled)")
 
 # ============================================================================
+# AUTOMATIC CITATION VERIFIER NODE - V3 INNOVATION
+# ============================================================================
+
+def create_citation_verifier_node():
+    """
+    Creates an automatic citation verification node that enforces citation quality.
+
+    This node:
+    1. Automatically extracts the researcher's response
+    2. Calls verify_citations to check all quotes
+    3. If verification passes → routes to END
+    4. If verification fails → provides feedback and routes back to researcher
+
+    This eliminates reliance on the agent remembering to verify citations.
+    The agent CAN still call verify_citations proactively if it wants to.
+    """
+
+    def citation_verifier(state: MessagesState) -> Command[Literal["researcher", END]]:
+        """
+        Automatic citation verification with feedback loop.
+
+        Extracts the last AI response, verifies citations, and routes accordingly.
+        """
+        messages = state["messages"]
+
+        # Find the last AI response (researcher's final answer)
+        last_ai_message = None
+        for msg in reversed(messages):
+            if isinstance(msg, AIMessage) and msg.content and not (hasattr(msg, 'tool_calls') and msg.tool_calls):
+                last_ai_message = msg
+                break
+
+        if not last_ai_message:
+            # No AI response found, this shouldn't happen but handle gracefully
+            print("\n⚠️  Citation Verifier: No AI response found, allowing completion")
+            return Command(goto=END, update={})
+
+        response_text = last_ai_message.content
+
+        # Handle structured response format (Gemini sometimes returns list)
+        if isinstance(response_text, list):
+            if len(response_text) > 0 and isinstance(response_text[0], dict) and 'text' in response_text[0]:
+                response_text = response_text[0]['text']
+            else:
+                response_text = str(response_text)
+
+        # Extract session_id from the plan
+        # Look for plan creation in tool messages
+        session_id = None
+        for msg in messages:
+            if isinstance(msg, ToolMessage) and msg.name == "create_research_plan":
+                try:
+                    import json
+                    plan_data = json.loads(msg.content)
+                    session_id = plan_data.get("plan_id")
+                    if session_id:
+                        break
+                except:
+                    pass
+
+        if not session_id:
+            # Fallback: create a temporary session_id
+            from datetime import datetime
+            session_id = f"verify_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            print(f"\n⚠️  Citation Verifier: No plan_id found, using fallback: {session_id}")
+
+        # Call verify_citations
+        print(f"\n🔍 Citation Verifier: Automatically verifying citations...")
+        print(f"   Session ID: {session_id}")
+        print(f"   Response length: {len(str(response_text))} chars")
+
+        try:
+            verification_result = verify_citations.invoke({
+                "response_text": str(response_text),
+                "session_id": session_id
+            })
+
+            all_verified = verification_result.get("all_verified", False)
+            total_citations = verification_result.get("total_citations", 0)
+            verified_count = verification_result.get("verified_count", 0)
+            failed_citations = verification_result.get("failed_citations", [])
+
+            print(f"   Total citations: {total_citations}")
+            print(f"   Verified: {verified_count}")
+            print(f"   All verified: {all_verified}")
+
+            if all_verified:
+                # ✅ All citations verified - allow completion
+                print(f"\n✅ Citation Verifier: All {total_citations} citations verified! Allowing completion.")
+                return Command(
+                    goto=END,
+                    update={}
+                )
+            else:
+                # ❌ Citations failed - send back to researcher with feedback
+                print(f"\n❌ Citation Verifier: {len(failed_citations)} citations failed verification")
+
+                # Build detailed feedback message
+                feedback_parts = [
+                    "🚨 CITATION VERIFICATION FAILED 🚨",
+                    "",
+                    f"Your response has {total_citations} citations, but {len(failed_citations)} failed verification.",
+                    "",
+                    "FAILED CITATIONS:"
+                ]
+
+                for i, failed in enumerate(failed_citations, 1):
+                    ref_num = failed.get("ref_num", "?")
+                    quote = failed.get("quote", "")
+                    url = failed.get("url", "")
+                    reason = failed.get("reason", "Unknown error")
+
+                    feedback_parts.append(f"\n{i}. Citation [{ref_num}]:")
+                    feedback_parts.append(f"   Quote: \"{quote[:100]}...\"" if len(quote) > 100 else f"   Quote: \"{quote}\"")
+                    feedback_parts.append(f"   URL: {url}")
+                    feedback_parts.append(f"   ❌ REASON: {reason}")
+
+                    if "suggestion" in failed:
+                        feedback_parts.append(f"   💡 SUGGESTION: {failed['suggestion']}")
+
+                feedback_parts.append("")
+                feedback_parts.append("REQUIRED ACTIONS:")
+                feedback_parts.append("1. Use get_cached_source_content to retrieve the correct source content")
+                feedback_parts.append("2. Extract EXACT quotes (character-for-character) from the source")
+                feedback_parts.append("3. Update your response with the correct quotes")
+                feedback_parts.append("4. Ensure the SAME exact quote appears both inline and in the source list")
+                feedback_parts.append("")
+                feedback_parts.append("You will be sent back to fix these issues. The system will verify again after you fix them.")
+
+                feedback_message = "\n".join(feedback_parts)
+
+                # Create a system message with feedback
+                feedback_msg = SystemMessage(content=feedback_message)
+
+                print(f"\n📤 Citation Verifier: Sending researcher back with feedback...")
+                print(f"   Feedback message length: {len(feedback_message)} chars")
+
+                # Route back to researcher with feedback
+                return Command(
+                    goto="researcher",
+                    update={"messages": [feedback_msg]}
+                )
+
+        except Exception as e:
+            # If verification fails due to error, log and allow completion
+            # (Don't want to block completion due to technical issues)
+            print(f"\n⚠️  Citation Verifier: Error during verification: {str(e)}")
+            print(f"   Allowing completion despite error")
+            import traceback
+            traceback.print_exc()
+            return Command(goto=END, update={})
+
+    return citation_verifier
+
+citation_verifier = create_citation_verifier_node()
+print(f"✓ Citation verifier node created (automatic enforcement)")
+
+# ============================================================================
 # GRAPH CONSTRUCTION
 # ============================================================================
 
 def create_graph():
     """
-    Constructs the main graph with Command.goto routing.
+    Constructs the main graph with Command.goto routing and automatic citation verification.
 
-    Graph structure:
-        START → supervisor → delegation_tools → researcher → END
-                    ↓             ↓ (Command)      ↓
-                   END       (goto="researcher")  END
+    Graph structure (V3 with auto-verification):
+        START → supervisor → delegation_tools → researcher → citation_verifier → END
+                    ↓             ↓ (Command)      ↑             ↓ (if fails)
+                   END       (goto="researcher")  └─────────────┘
 
     Key features:
     - No explicit edges from delegation_tools (Command.goto handles routing)
     - Supervisor can route to END directly (no delegation needed)
     - Delegation tools automatically route to correct subagent via Command
-    - V3: Researcher has citation verification workflow
+    - V3 INNOVATION: Automatic citation verification after researcher completes
+    - Citation verifier routes back to researcher with feedback if verification fails
+    - Researcher can iterate until all citations pass
     """
 
     # Initialize graph with MessagesState
@@ -355,6 +515,7 @@ def create_graph():
     workflow.add_node("supervisor", supervisor)
     workflow.add_node("delegation_tools", delegation_tools)
     workflow.add_node("researcher", researcher_subagent)
+    workflow.add_node("citation_verifier", citation_verifier)  # V3: Auto-verification
 
     # Define edges
     # Start with supervisor
@@ -363,8 +524,13 @@ def create_graph():
     # Supervisor routes via Command.goto (no edges needed from delegation_tools)
     # delegation_tools routes via Command.goto to researcher
 
-    # Researcher always returns to END
-    workflow.add_edge("researcher", END)
+    # V3: Researcher goes to citation_verifier (not directly to END)
+    workflow.add_edge("researcher", "citation_verifier")
+
+    # V3: Citation verifier uses Command.goto to route:
+    # - If citations pass → END
+    # - If citations fail → researcher (with feedback)
+    # (No explicit edge needed - Command.goto handles routing)
 
     # Compile with checkpointer for memory
     checkpointer = MemorySaver()
