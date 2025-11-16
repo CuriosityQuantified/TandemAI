@@ -566,15 +566,19 @@ def get_researcher_prompt(current_date: str) -> str:
     """
     Get researcher/fact-finding prompt with current date injected.
 
+    V3 UPDATE: Now uses citation-aware challenger prompt with verification tools.
+
     Args:
         current_date: Current date in YYYY-MM-DD format
 
     Returns:
-        Complete researcher system prompt with date context
+        Complete researcher system prompt with date context and citation requirements
 
     Example:
         >>> from datetime import datetime
         >>> current_date = datetime.now().strftime("%Y-%m-%d")
         >>> prompt = get_researcher_prompt(current_date)
     """
-    return RESEARCHER_SYSTEM_PROMPT.format(current_date=current_date)
+    # V3: Use citation-aware challenger prompt instead of standard prompt
+    from .prompts.researcher.challenger_prompt_3 import get_researcher_prompt as get_v3_prompt
+    return get_v3_prompt(current_date)

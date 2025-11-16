@@ -40,6 +40,13 @@ from module_2_2_simple import (
     edit_plan_tool,
 )
 
+# Import V3 Citation Verification Tools
+from tools.citation_verification import (
+    tavily_search_cached,
+    verify_citations,
+    get_cached_source_content
+)
+
 try:
     from module_2_2_simple import checkpointer
 except ImportError:
@@ -211,12 +218,16 @@ async def supervisor_production_tools_node(state: SupervisorAgentState):
 # Each subagent gets its own dedicated tools node with appropriate tools
 # This allows subagents to have their own reasoning loops without routing conflicts
 
-# Researcher Tools Node - includes search and file operations
+# Researcher Tools Node - V3 with citation verification
 researcher_tools_list = [
-    tavily_search,
+    tavily_search_cached,  # V3: Caching search for citation verification
+    verify_citations,       # V3: Verify quotes against cached sources
+    get_cached_source_content,  # V3: Re-read sources for corrections
     write_file_tool,
     edit_file_with_approval,
     read_file_tool,
+    create_research_plan_tool,  # Added for research planning
+    update_plan_progress_tool,  # Added for progress tracking
 ]
 researcher_tool_node_executor = ToolNode(researcher_tools_list)
 
@@ -495,51 +506,31 @@ def create_researcher_graph():
 
     # Researcher-specific nodes
     def researcher_agent_node(state: SubagentState):
-        """Researcher reasoning node with optimized prompt"""
+        """Researcher reasoning node with V3 citation-aware prompt"""
         messages = state["messages"]
 
-        # Use optimized researcher prompt (350 lines with extensive citation requirements)
+        # V3: Use citation-aware researcher prompt with tool bindings for citation verification
         current_date = datetime.now().strftime("%Y-%m-%d")
         system_prompt = get_researcher_prompt(current_date=current_date)
 
         messages_with_system = [SystemMessage(content=system_prompt)] + list(messages)
-        model_with_tools = model.bind_tools(production_tools)
+        # V3: Bind researcher-specific tools (includes citation verification)
+        model_with_tools = model.bind_tools(researcher_tools_list)
         response = model_with_tools.invoke(messages_with_system)
         return {"messages": [response]}
 
     def researcher_tools_node(state: SubagentState):
-        """Researcher tool execution node"""
-        last_message = state["messages"][-1]
+        """
+        Researcher tool execution node - V3 with real tool execution.
 
-        if not hasattr(last_message, "tool_calls") or not last_message.tool_calls:
-            return {"messages": []}
-
-        # Execute researcher tools (simplified for MVP)
-        results = []
-        for idx, tool_call in enumerate(last_message.tool_calls):
-            try:
-                # Extract tool_call_id with defensive None handling
-                tool_call_id = tool_call.get("id")
-                tool_name = tool_call.get('name', 'unknown_tool')
-
-                # Generate fallback ID if missing or None
-                if not tool_call_id:
-                    tool_call_id = f"fallback_{tool_name}_{idx}"
-                    logger.warning(f"[Researcher Tools] Missing tool_call_id for {tool_name}. Generated fallback: {tool_call_id}")
-
-                result_message = ToolMessage(
-                    content=f"Researcher tool {tool_name} executed",
-                    tool_call_id=tool_call_id,
-                )
-                results.append(result_message)
-
-            except Exception as e:
-                logger.error(f"[Researcher Tools] Error creating ToolMessage for tool_call {idx}: {e}")
-                logger.error(f"[Researcher Tools] Problematic tool_call: {tool_call}")
-                # Continue to next tool call instead of crashing
-                continue
-
-        return {"messages": results}
+        Now actually executes citation verification tools instead of returning placeholders.
+        This enables:
+        - tavily_search_cached: Real Tavily searches with PostgreSQL caching
+        - verify_citations: Actual quote verification against cached sources
+        - get_cached_source_content: Real database lookups for source re-reading
+        """
+        # V3: Use the ToolNode executor to actually run the tools
+        return researcher_tool_node_executor(state)
 
     # Routing functions
     def should_continue_researcher(state: SubagentState) -> Literal["tools", "end"]:
