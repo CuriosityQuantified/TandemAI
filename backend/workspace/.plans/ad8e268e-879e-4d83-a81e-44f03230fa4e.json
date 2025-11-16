@@ -1,0 +1,16 @@
+{
+  "plan_id": "ad8e268e-879e-4d83-a81e-44f03230fa4e",
+  "query": "Latest developments in quantum computing",
+  "steps": [
+    "Step 1: Search for recent quantum computing breakthroughs from major tech companies (IBM, Google, IonQ) published in the last 6 months",
+    "Step 2: Review latest peer-reviewed research papers on quantum algorithms and error correction from arXiv and Nature journals",
+    "Step 3: Analyze current quantum computing hardware developments including qubit count improvements and coherence time advancements",
+    "Step 4: Investigate commercial applications and industry adoption of quantum computing in finance, pharmaceuticals, and optimization",
+    "Step 5: Compile findings on quantum computing challenges, timeline predictions, and expert forecasts for near-term practical quantum advantage"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762917124.214763,
+  "status": "active"
+}

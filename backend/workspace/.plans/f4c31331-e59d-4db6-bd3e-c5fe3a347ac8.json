@@ -1,0 +1,14 @@
+{
+  "plan_id": "f4c31331-e59d-4db6-bd3e-c5fe3a347ac8",
+  "query": "Latest space news for 2025",
+  "steps": [
+    "Step 1: Search for major space agency announcements and missions scheduled for 2025, including NASA, ESA, SpaceX, and other international space organizations",
+    "Step 2: Compile recent space exploration developments from 2025 such as satellite launches, Mars missions, lunar programs, and space station activities",
+    "Step 3: Identify and summarize the most significant space news stories from 2025, including technological breakthroughs, discoveries, and upcoming events"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762964429.2737868,
+  "status": "active"
+}

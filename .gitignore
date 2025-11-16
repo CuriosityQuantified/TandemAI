@@ -306,15 +306,29 @@ test-results.json
 test-report.html
 
 # ===========================================
-# PROJECT-SPECIFIC
+# PROJECT-SPECIFIC (TandemAI)
 # ===========================================
 # Archive directory (old code moved here)
 archive/
+
+# Third-party repositories (cloned for reference)
+deepagents/
+
+# Legacy main/ directory (archived after reorganization)
+main/
+
+# Claude Code local session data
+.claude/
 
 # Output directories for generated content
 outputs/
 generated/
 results/
+
+# Evaluation experiment outputs
+evaluation/experiments/baselines/
+evaluation/experiments/*/results/
+evaluation/experiments/*/logs/
 
 # Session data
 sessions/
@@ -325,10 +339,15 @@ local/
 scratch/
 sandbox/
 
-# Backup files
+# Backup files and archives
 backups/
 *.old
 *.orig
+*.tar.gz
+*.zip
+
+# Path update documentation (temporary, created during reorganization)
+docs/path_updates/
 
 # API test results
 *_test_results_*.json
@@ -346,6 +365,15 @@ code_snapshots/
 old/
 deprecated/
 legacy/
+
+# TandemAI-specific log patterns
+benchmark_*.log
+*_output*.log
+test_*.log
+FINAL_*.log
+OPTIMIZED_*.log
+RETRY_*.log
+REMAINING_*.log
 
 # ===========================================
 # FILES TO KEEP (EXCEPTIONS)

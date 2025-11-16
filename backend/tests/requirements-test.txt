@@ -1,19 +1,18 @@
-# Testing Dependencies for ATLAS Backend
+# Testing Dependencies for Subagent Test Suite
+# Install with: pip install -r requirements-test.txt
 
-# Core testing framework
+# Core testing
 pytest>=7.4.0
 pytest-asyncio>=0.21.0
 pytest-cov>=4.1.0
-pytest-mock>=3.11.0
+pytest-timeout>=2.1.0
 
-# HTTP testing
-httpx>=0.24.0           # For async client testing
-requests-mock>=1.11.0   # Mock HTTP responses
+# Performance monitoring
+psutil>=5.9.0
 
-# Test data generation
-faker>=20.0.0           # Generate test data
-factory-boy>=3.3.0      # Test data factories
+# Additional utilities
+pytest-xdist>=3.3.0  # Parallel test execution
+pytest-mock>=3.11.0  # Mocking utilities
 
-# Mocking and fixtures
-responses>=0.23.0       # Mock requests library
-freezegun>=1.2.0        # Mock datetime
+# LangGraph supervisor for handoff tools testing (Config 5)
+langgraph-supervisor>=0.1.0

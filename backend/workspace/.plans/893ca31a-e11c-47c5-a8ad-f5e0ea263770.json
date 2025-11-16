@@ -1,0 +1,16 @@
+{
+  "plan_id": "893ca31a-e11c-47c5-a8ad-f5e0ea263770",
+  "query": "Quantum computing trends in 2025",
+  "steps": [
+    "Step 1: Review recent publications and preprints from arXiv, Nature, and Science journals from 2024-2025 focusing on quantum computing breakthroughs and technological advances",
+    "Step 2: Analyze major tech company announcements (IBM, Google, Microsoft, Amazon) regarding their quantum computing roadmaps and product releases for 2025",
+    "Step 3: Investigate emerging quantum computing applications in drug discovery, optimization, cryptography, and machine learning with specific use cases and timelines",
+    "Step 4: Examine funding trends and investment patterns in quantum computing startups and research initiatives for 2025",
+    "Step 5: Compile industry reports from Gartner, McKinsey, and Forrester on quantum computing market projections, adoption rates, and competitive landscape for 2025"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762895022.079058,
+  "status": "active"
+}

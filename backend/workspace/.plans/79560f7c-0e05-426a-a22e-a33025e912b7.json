@@ -1,0 +1,16 @@
+{
+  "plan_id": "79560f7c-0e05-426a-a22e-a33025e912b7",
+  "query": "LangChain features and capabilities",
+  "steps": [
+    "Step 1: Review LangChain official documentation and GitHub repository to identify core features including chains, agents, memory management, and prompt templates",
+    "Step 2: Analyze LangChain's integration capabilities with language models (OpenAI, Anthropic, Hugging Face) and external APIs to document supported integrations",
+    "Step 3: Examine LangChain's retrieval and vector store capabilities including RAG (Retrieval-Augmented Generation) implementations and supported vector databases",
+    "Step 4: Investigate LangChain's tools and utilities for building applications such as output parsing, document loaders, text splitters, and evaluation frameworks",
+    "Step 5: Compile a comprehensive comparison of LangChain's capabilities against competing frameworks and document use cases where LangChain excels"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762898291.279978,
+  "status": "active"
+}

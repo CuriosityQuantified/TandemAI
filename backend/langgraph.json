@@ -1,0 +1,14 @@
+{
+  "python_version": "3.12",
+  "dependencies": ["."],
+  "graphs": {
+    "supervisor_agent_unified": "./langgraph_studio_graphs.py:supervisor_agent_unified",
+    "supervisor_agent": "./langgraph_studio_graphs.py:supervisor_graph",
+    "researcher": "./langgraph_studio_graphs.py:researcher_graph",
+    "data_scientist": "./langgraph_studio_graphs.py:data_scientist_graph",
+    "expert_analyst": "./langgraph_studio_graphs.py:expert_analyst_graph",
+    "writer": "./langgraph_studio_graphs.py:writer_graph",
+    "reviewer": "./langgraph_studio_graphs.py:reviewer_graph"
+  },
+  "env": "/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/.env"
+}

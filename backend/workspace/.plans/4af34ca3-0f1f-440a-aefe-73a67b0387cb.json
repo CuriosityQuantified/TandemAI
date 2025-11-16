@@ -1,0 +1,16 @@
+{
+  "plan_id": "4af34ca3-0f1f-440a-aefe-73a67b0387cb",
+  "query": "Deep learning breakthroughs in 2025",
+  "steps": [
+    "Step 1: Search academic databases (arXiv, IEEE Xplore, Google Scholar) for papers published in 2025 with keywords 'deep learning breakthrough', 'neural network advancement', and 'AI innovation 2025'",
+    "Step 2: Review major AI conference proceedings from 2025 (NeurIPS, ICML, ICCV, AAAI) to identify keynote presentations and award-winning papers on deep learning",
+    "Step 3: Compile information on specific breakthroughs in key areas: transformer architectures, multimodal learning, efficient neural networks, and large language models released in 2025",
+    "Step 4: Analyze industry announcements and research publications from leading AI organizations (OpenAI, DeepMind, Meta, Google Brain) documenting their 2025 deep learning achievements",
+    "Step 5: Synthesize findings into a comprehensive report categorizing breakthroughs by application domain (computer vision, NLP, robotics, scientific discovery) with impact assessment and future implications"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762925181.87793,
+  "status": "active"
+}

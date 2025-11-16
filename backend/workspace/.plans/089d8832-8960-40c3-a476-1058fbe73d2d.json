@@ -1,0 +1,15 @@
+{
+  "plan_id": "089d8832-8960-40c3-a476-1058fbe73d2d",
+  "query": "Latest developments in LangGraph 2025",
+  "steps": [
+    "Step 1: Search for official LangGraph GitHub repository releases and changelog for 2025 updates to identify new features, bug fixes, and version releases",
+    "Step 2: Review LangGraph documentation and blog posts from LangChain to find announcements about 2025 developments, API changes, and architectural improvements",
+    "Step 3: Examine technical articles, tutorials, and community discussions on platforms like Stack Overflow, Reddit, and LangChain Discord to identify real-world applications and user feedback on 2025 features",
+    "Step 4: Compile findings into a comprehensive summary documenting key 2025 developments including new capabilities, performance improvements, breaking changes, and recommended upgrade paths"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762892845.081849,
+  "status": "active"
+}

@@ -1,0 +1,64 @@
+{
+  "plan_id": "plan_20251113_133630",
+  "query": "Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+  "created_at": "2025-11-13T13:36:30.825923",
+  "num_steps": 8,
+  "steps": [
+    {
+      "step_index": 0,
+      "description": "Step 1: Research aspect 1 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 1",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 1,
+      "description": "Step 2: Research aspect 2 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 2",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 2,
+      "description": "Step 3: Research aspect 3 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 3",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 3,
+      "description": "Step 4: Research aspect 4 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 4",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 4,
+      "description": "Step 5: Research aspect 5 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 5",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 5,
+      "description": "Step 6: Research aspect 6 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 6",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 6,
+      "description": "Step 7: Research aspect 7 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 7",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 7,
+      "description": "Step 8: Research aspect 8 of Surface code quantum error correction: technical deep dive for quantum engineers. Context: Comprehensive technical explanation needed. Goal: Provide implementation details, logical/physical qubit relationships, threshold requirements, and recent improvements. Focus areas: 1) Physical implementation on superconducting qubits with specific circuit designs, 2) Logical vs physical qubit overhead calculations and scaling laws, 3) Threshold theorem mathematical requirements and current experimental achievements (2023-2025), 4) Recent code distance improvements and logical error rate measurements. Success criteria: 5+ peer-reviewed academic sources, quantitative metrics and exact equations, recent experimental data from leading labs (Google, IBM, Delft). Prioritize Nature, Science, IEEE Quantum Engineering, and arxiv preprints from 2023-2025.",
+      "action": "tavily_search for topic 8",
+      "status": "pending",
+      "result": null
+    }
+  ]
+}

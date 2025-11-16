@@ -1,0 +1,14 @@
+{
+  "plan_id": "b1703a3c-2df4-489f-af2c-4f87ba3ebed2",
+  "query": "Research latest space news for 2025",
+  "steps": [
+    "Step 1: Search for major space agency announcements and missions scheduled for 2025, including NASA, ESA, SpaceX, and other organizations' official websites and press releases",
+    "Step 2: Review recent space news articles from reputable sources such as Space.com, NASA's official news portal, and scientific journals published in late 2024 and early 2025 covering upcoming space events",
+    "Step 3: Compile and analyze findings to identify key 2025 space events including satellite launches, planetary missions, space station activities, and astronomical discoveries with confirmed dates and details"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762964724.399942,
+  "status": "active"
+}

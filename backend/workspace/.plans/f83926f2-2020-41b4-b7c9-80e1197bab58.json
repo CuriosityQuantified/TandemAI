@@ -1,0 +1,17 @@
+{
+  "plan_id": "f83926f2-2020-41b4-b7c9-80e1197bab58",
+  "query": "Latest quantum computing advances in 2025",
+  "steps": [
+    "Step 1: Search for major quantum computing breakthroughs announced by leading tech companies (IBM, Google, IonQ, Rigetti) in 2025",
+    "Step 2: Review academic publications and preprints from arXiv and Nature journals focusing on quantum computing advances from 2025",
+    "Step 3: Compile information on quantum error correction improvements and qubit count increases reported in 2025",
+    "Step 4: Investigate commercial applications and partnerships involving quantum computing that emerged in 2025",
+    "Step 5: Analyze funding announcements and investment trends in quantum computing startups and research initiatives during 2025",
+    "Step 6: Synthesize findings into a comprehensive summary of the top 5-10 most significant quantum computing advances in 2025"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762924491.5601249,
+  "status": "active"
+}

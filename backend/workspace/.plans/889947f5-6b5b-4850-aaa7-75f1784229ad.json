@@ -1,0 +1,17 @@
+{
+  "plan_id": "889947f5-6b5b-4850-aaa7-75f1784229ad",
+  "query": "artificial intelligence breakthroughs in 2025",
+  "steps": [
+    "Step 1: Search for major AI breakthroughs announced in 2025 from leading tech companies (OpenAI, Google DeepMind, Meta, Anthropic) and compile a comprehensive list",
+    "Step 2: Identify and categorize breakthroughs by domain (natural language processing, computer vision, robotics, scientific discovery, multimodal AI) to understand key advancement areas",
+    "Step 3: Review academic papers and research publications from top-tier conferences (NeurIPS, ICML, ICLR) published in 2025 to identify peer-reviewed innovations",
+    "Step 4: Analyze the technical specifications and capabilities of new AI models released in 2025, comparing performance metrics against previous benchmarks",
+    "Step 5: Examine real-world applications and deployment of 2025 AI breakthroughs across industries (healthcare, finance, manufacturing, education) with documented case studies",
+    "Step 6: Synthesize findings into a comprehensive report highlighting the most significant breakthroughs, their implications, and potential future impact on AI development"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762924927.1812422,
+  "status": "active"
+}

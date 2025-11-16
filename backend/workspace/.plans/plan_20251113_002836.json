@@ -1,0 +1,50 @@
+{
+  "plan_id": "plan_20251113_002836",
+  "query": "Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+  "created_at": "2025-11-13T00:28:36.600927",
+  "num_steps": 6,
+  "steps": [
+    {
+      "step_index": 0,
+      "description": "Step 1: Research aspect 1 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 1",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 1,
+      "description": "Step 2: Research aspect 2 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 2",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 2,
+      "description": "Step 3: Research aspect 3 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 3",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 3,
+      "description": "Step 4: Research aspect 4 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 4",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 4,
+      "description": "Step 5: Research aspect 5 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 5",
+      "status": "pending",
+      "result": null
+    },
+    {
+      "step_index": 5,
+      "description": "Step 6: Research aspect 6 of Investigate quantum advantage/supremacy claims in 2024, focusing on:\n1. Major quantum computing companies' claims (Google, IBM, others)\n2. Specific quantum supremacy experiments and their critiques\n3. Current state of quantum computational advantage\n4. Conflicting perspectives and scientific debates\n5. Verifiable quotes from key researchers and institutions\n\nResearch constraints:\n- Prioritize peer-reviewed sources\n- Include academic and industry perspectives\n- Highlight areas of scientific disagreement\n- Focus on most recent developments (2023-2024)\n- Seek quantitative evidence and precise claims",
+      "action": "tavily_search for topic 6",
+      "status": "pending",
+      "result": null
+    }
+  ]
+}

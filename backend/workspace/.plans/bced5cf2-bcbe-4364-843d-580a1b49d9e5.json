@@ -1,0 +1,26 @@
+{
+  "plan_id": "bced5cf2-bcbe-4364-843d-580a1b49d9e5",
+  "query": "Latest AI developments and breakthroughs November 2025",
+  "steps": [
+    "Step 1: Search major AI research publications and preprint servers (arXiv, Papers with Code) for papers published or updated in November 2025 using keywords: 'AI breakthrough', 'machine learning advancement', 'neural networks', 'large language models'",
+    "Step 2: Review announcements from leading AI organizations (OpenAI, Google DeepMind, Meta AI, Anthropic, Microsoft Research) for official press releases and blog posts from November 2025",
+    "Step 3: Analyze tech news aggregators and specialized AI news outlets (TechCrunch, VentureBeat, The Verge, AI News) for coverage of November 2025 AI developments and their significance",
+    "Step 4: Compile a comparative analysis of the top 5-10 breakthroughs identified, documenting: breakthrough name, organization, technical details, potential applications, and industry impact",
+    "Step 5: Synthesize findings into a comprehensive summary highlighting the most significant trends, innovations, and their implications for the AI field moving forward"
+  ],
+  "current_step": 5,
+  "progress": 1.0,
+  "past_steps": [
+    [
+      "Step 1: Search major AI research publications and preprint servers (arXiv, Papers with Code) for papers published or updated in November 2025 using keywords: 'AI breakthrough', 'machine learning advancement', 'neural networks', 'large language models'",
+      "Searched major AI news sources and found key developments from September-November 2025, including new models and breakthroughs from OpenAI, Google, Meta, DeepSeek, and Alibaba."
+    ],
+    [
+      "Step 5: Synthesize findings into a comprehensive summary highlighting the most significant trends, innovations, and their implications for the AI field moving forward",
+      "Synthesized findings into comprehensive summary highlighting key trends: autonomous agents, open-source dominance, multimodal capabilities, and geographic diversification in AI development."
+    ]
+  ],
+  "created_at": 1762823216.6335208,
+  "status": "active",
+  "last_updated": 1762823260.493335
+}

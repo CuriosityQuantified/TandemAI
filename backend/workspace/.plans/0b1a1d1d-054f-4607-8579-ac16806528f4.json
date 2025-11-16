@@ -1,0 +1,17 @@
+{
+  "plan_id": "0b1a1d1d-054f-4607-8579-ac16806528f4",
+  "query": "AI trends in 2025",
+  "steps": [
+    "Step 1: Review major AI research publications and whitepapers from leading organizations (OpenAI, DeepMind, Meta, Google) released in late 2024 and early 2025 to identify emerging technical trends",
+    "Step 2: Analyze industry reports from Gartner, McKinsey, and Forrester on AI adoption forecasts and market predictions for 2025",
+    "Step 3: Examine recent announcements and product launches from major tech companies to identify practical AI applications and deployment trends",
+    "Step 4: Survey academic conferences and preprint repositories (arXiv) for cutting-edge AI research topics gaining momentum in 2025",
+    "Step 5: Compile data on enterprise AI investment patterns, funding trends, and venture capital focus areas for 2025",
+    "Step 6: Synthesize findings into a comprehensive summary identifying top 5-7 AI trends with supporting evidence and projected impact for 2025"
+  ],
+  "current_step": 0,
+  "progress": 0.0,
+  "past_steps": [],
+  "created_at": 1762917131.2853389,
+  "status": "active"
+}
