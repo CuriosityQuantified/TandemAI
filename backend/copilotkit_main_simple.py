@@ -16,9 +16,10 @@ import logging
 
 # LangGraph imports for minimal graph
 from langgraph.graph import StateGraph, END, START, MessagesState
+from langgraph.checkpoint.memory import MemorySaver
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_anthropic import ChatAnthropic
-from typing import Literal
+from langchain_openai import ChatOpenAI
+from typing import Literal, List, Any
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -30,27 +31,39 @@ graph = None
 def create_minimal_graph():
     """Create a minimal test graph for CopilotKit integration."""
 
-    # Initialize Claude model
-    model = ChatAnthropic(
-        model="claude-3-5-sonnet-20241022",
-        api_key=os.getenv("ANTHROPIC_API_KEY"),
+    # CRITICAL: AgentState must extend MessagesState and include tools field
+    class AgentState(MessagesState):
+        tools: List[Any]  # Required for AG-UI protocol
+
+    # Initialize OpenAI model (using OpenAI since Anthropic API key has issues)
+    model = ChatOpenAI(
+        model="gpt-4o-mini",  # Fast, cost-effective model for testing
+        api_key=os.getenv("OPENAI_API_KEY"),
         temperature=0.7,
     )
 
-    def agent_node(state: MessagesState):
+    def agent_node(state: AgentState):
         """Simple agent that responds to messages."""
         messages = state["messages"]
+        frontend_tools = state.get("tools", [])  # Get tools from frontend
+
         system_prompt = SystemMessage(content="You are a helpful research assistant. Provide concise, accurate responses.")
-        response = model.invoke([system_prompt] + list(messages))
+
+        # Bind frontend tools to model
+        model_with_tools = model.bind_tools(frontend_tools) if frontend_tools else model
+
+        response = model_with_tools.invoke([system_prompt] + list(messages))
         return {"messages": [response]}
 
-    # Create simple graph
-    workflow = StateGraph(MessagesState)
+    # Create graph with AgentState (includes tools field)
+    workflow = StateGraph(AgentState)
     workflow.add_node("agent", agent_node)
     workflow.add_edge(START, "agent")
     workflow.add_edge("agent", END)
 
-    return workflow.compile()
+    # CRITICAL: Compile with checkpointer for state persistence
+    checkpointer = MemorySaver()
+    return workflow.compile(checkpointer=checkpointer)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
