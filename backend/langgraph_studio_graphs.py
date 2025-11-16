@@ -158,8 +158,9 @@ delegation_tools = [
 ]
 
 # Production tools - regular tools that loop back to agent
+# NOTE: tavily_search REMOVED to enforce delegation architecture
+# Supervisor must delegate ALL research to researcher subagent
 supervisor_production_tools = [
-    tavily_search,
     write_file_tool,
     edit_file_with_approval,
     create_research_plan_tool,
