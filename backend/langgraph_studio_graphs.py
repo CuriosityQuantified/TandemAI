@@ -15,7 +15,7 @@ from langgraph.graph import StateGraph, END, add_messages, MessagesState
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
 import typing
-from typing import Literal, Optional
+from typing import Literal, Optional, Any
 from langchain_core.messages import ToolMessage, SystemMessage, AIMessage, HumanMessage
 from datetime import datetime
 
@@ -95,6 +95,11 @@ class SupervisorAgentState(MessagesState):
     parent_thread_id: Optional[str] = None  # For subagent execution context
     subagent_thread_id: Optional[str] = None  # For subagent execution context
     subagent_type: Optional[str] = None  # Type of subagent (researcher, writer, etc.)
+
+    # CopilotKit fields for frontend integration
+    tools: list[Any] = []  # Frontend tools from CopilotKit
+    active_agent: str = "supervisor"  # For routing visualization
+    routing_reason: str = ""  # Why this agent was selected
     # Note: messages field automatically inherited from MessagesState with proper add_messages reducer
 
 

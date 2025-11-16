@@ -15,7 +15,7 @@
 
 | Phase | Status | Completion | Notes |
 |-------|--------|------------|-------|
-| **Phase 1: Foundation** | 🚧 In Progress | 33% | Day 1 complete |
+| **Phase 1: Foundation** | 🚧 In Progress | 66% | Day 2 complete |
 | Phase 2: Core Features | ⏳ Pending | 0% | - |
 | Phase 3: Advanced Features | ⏳ Pending | 0% | - |
 | Phase 4: Production | ⏳ Pending | 0% | - |
@@ -28,14 +28,22 @@
 - [x] Requirements.txt updated with CopilotKit packages
 - [x] Package.json updated with CopilotKit packages
 
+### ✅ Completed Tasks (Day 2)
+
+- [x] Created copilotkit_main.py with ag-ui endpoint
+- [x] Created copilotkit_main_simple.py (minimal test version)
+- [x] Updated SupervisorAgentState with CopilotKit fields (tools, active_agent, routing_reason)
+- [x] Single ag-ui endpoint replaces 17 REST + 2 WebSocket endpoints
+- [x] Tested: Minimal backend starts successfully, health check passes, ag-ui responds
+- [x] Note: Full backend integration pending dependency fixes (deepagents.backends)
+
 ### 🚧 In Progress
 
-- [ ] Day 2: Backend AG-UI endpoint creation
-- [ ] Day 2: Agent state updates
+- [ ] Day 3: Fix backend dependencies for full graph integration
+- [ ] Day 3: Frontend CopilotKit provider setup
 
 ### ⏳ Upcoming
 
-- [ ] Day 3: Frontend CopilotKit provider setup
 - [ ] Day 4: State management migration
 - [ ] Day 5: Integration testing
 
