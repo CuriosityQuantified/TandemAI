@@ -1410,9 +1410,10 @@ TOOL USAGE PATTERNS:
 # DEEP AGENT CREATION
 # ============================================================================
 
-# Collect production tools - now includes custom write_file, edit_file, and planning tools
+# Collect production tools - supervisor coordinates but delegates specialized tasks
+# NOTE: tavily_search is intentionally EXCLUDED - research MUST be delegated to researcher
+# This enforces proper architectural boundaries and enables V3 citation verification
 production_tools = [
-    tavily_search,
     write_file_tool,            # Custom tool with explicit schema and approval
     edit_file_with_approval,    # Custom tool that overrides built-in edit_file
     create_research_plan_tool,  # Create structured research plan (NEW)
