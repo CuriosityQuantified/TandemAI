@@ -162,15 +162,17 @@ curl http://localhost:11434/api/version
 
 ## Running the System
 
-### Backend Agent (Single DeepAgent)
+### Backend API Server
 
 ```bash
 # Activate virtual environment
 source .venv/bin/activate
 
-# Run the core agent
-python backend/core_agent.py
+# Run the backend API server (FastAPI + Agent)
+python backend/backend_main.py
 ```
+
+**Note**: `backend_main.py` is the primary backend entry point. It runs a FastAPI server that exposes the TandemAI agent via HTTP/WebSocket endpoints.
 
 ### Test Configurations
 
