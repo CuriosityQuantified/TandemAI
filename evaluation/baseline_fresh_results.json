@@ -1,0 +1,1648 @@
+{
+  "timestamp": "2025-11-15T20:54:45.395604",
+  "total_tests": 32,
+  "passed": 0,
+  "results": [
+    {
+      "test_query": {
+        "id": "SIMPLE-001",
+        "query": "What is quantum error correction and why is it important?",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "has_definition": true,
+          "has_importance_explanation": true,
+          "has_exact_quotes": true,
+          "has_source_urls": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests basic definition + explanation pattern with planning",
+        "tags": [
+          "definition",
+          "explanation",
+          "quantum"
+        ]
+      },
+      "execution_time": 39.02043390274048,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 15,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_definition": false,
+        "has_importance_explanation": false,
+        "has_exact_quotes": true,
+        "has_source_urls": true,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 5"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-002",
+        "query": "Compare Python vs JavaScript for backend development",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 4,
+        "success_criteria": {
+          "covers_python": true,
+          "covers_javascript": true,
+          "has_comparison": true,
+          "has_pros_cons": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comparison pattern with two subjects",
+        "tags": [
+          "comparison",
+          "programming",
+          "backend"
+        ]
+      },
+      "execution_time": 32.84211993217468,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 12,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_python": false,
+        "covers_javascript": false,
+        "has_comparison": false,
+        "has_pros_cons": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-003",
+        "query": "Explain how transformers work in natural language processing",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "has_architecture_explanation": true,
+          "has_attention_mechanism": true,
+          "has_technical_details": true,
+          "has_exact_quotes": true,
+          "plan_created": true
+        },
+        "description": "Tests technical concept explanation with depth",
+        "tags": [
+          "machine-learning",
+          "nlp",
+          "technical"
+        ]
+      },
+      "execution_time": 38.46602702140808,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 13,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_architecture_explanation": false,
+        "has_attention_mechanism": false,
+        "has_technical_details": false,
+        "has_exact_quotes": true,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-004",
+        "query": "What are the main benefits and challenges of renewable energy?",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 4,
+        "success_criteria": {
+          "has_benefits": true,
+          "has_challenges": true,
+          "has_multiple_energy_types": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests pros/cons pattern across domain",
+        "tags": [
+          "renewable-energy",
+          "pros-cons",
+          "environment"
+        ]
+      },
+      "execution_time": 38.98490309715271,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 24,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_benefits": false,
+        "has_challenges": false,
+        "has_multiple_energy_types": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 5"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-005",
+        "query": "How does blockchain consensus work in Bitcoin?",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "has_consensus_explanation": true,
+          "has_technical_details": true,
+          "has_proof_of_work": true,
+          "has_exact_quotes": true,
+          "plan_created": true
+        },
+        "description": "Tests technical process explanation",
+        "tags": [
+          "blockchain",
+          "bitcoin",
+          "consensus",
+          "technical"
+        ]
+      },
+      "execution_time": 47.75994086265564,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 30,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_consensus_explanation": false,
+        "has_technical_details": false,
+        "has_proof_of_work": false,
+        "has_exact_quotes": true,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-006",
+        "query": "What is the difference between REST and GraphQL APIs?",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "covers_rest": true,
+          "covers_graphql": true,
+          "has_comparison": true,
+          "has_use_cases": true,
+          "plan_created": true
+        },
+        "description": "Tests API architecture comparison",
+        "tags": [
+          "api",
+          "rest",
+          "graphql",
+          "comparison"
+        ]
+      },
+      "execution_time": 5.523228883743286,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_rest": false,
+        "covers_graphql": false,
+        "has_comparison": false,
+        "has_use_cases": false,
+        "plan_created": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 0",
+        "Expected 3 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-007",
+        "query": "Explain the concept of vector databases and their applications",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "has_definition": true,
+          "has_applications": true,
+          "has_examples": true,
+          "has_technical_details": true,
+          "plan_created": true
+        },
+        "description": "Tests emerging technology explanation",
+        "tags": [
+          "vector-database",
+          "ai",
+          "technical"
+        ]
+      },
+      "execution_time": 32.74743723869324,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 30,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_definition": false,
+        "has_applications": false,
+        "has_examples": false,
+        "has_technical_details": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 5"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "SIMPLE-008",
+        "query": "What are the key principles of microservices architecture?",
+        "category": "simple",
+        "expected_steps": 4,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 3,
+        "success_criteria": {
+          "has_principles_list": true,
+          "has_explanations": true,
+          "has_examples": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests architectural principles enumeration",
+        "tags": [
+          "architecture",
+          "microservices",
+          "principles"
+        ]
+      },
+      "execution_time": 44.91009497642517,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 30,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_principles_list": false,
+        "has_explanations": false,
+        "has_examples": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 4 steps, got 5"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-001",
+        "query": "Compare LangChain vs LlamaIndex vs CrewAI for building AI agent applications",
+        "category": "multi_aspect",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_langchain": true,
+          "covers_llamaindex": true,
+          "covers_crewai": true,
+          "has_comparison_table": true,
+          "has_use_case_recommendations": true,
+          "plan_created": true,
+          "all_steps_completed": true,
+          "plan_has_5_steps": true
+        },
+        "description": "Tests 3-way framework comparison with synthesis",
+        "tags": [
+          "framework-comparison",
+          "ai-agents",
+          "multi-framework"
+        ]
+      },
+      "execution_time": 21.12263798713684,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_langchain": false,
+        "covers_llamaindex": false,
+        "covers_crewai": false,
+        "has_comparison_table": false,
+        "has_use_case_recommendations": false,
+        "plan_created": true,
+        "all_steps_completed": false,
+        "plan_has_5_steps": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 6",
+        "Expected 6 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-002",
+        "query": "Analyze the current state of large language models: capabilities, limitations, costs, and future trends",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 8,
+        "success_criteria": {
+          "covers_capabilities": true,
+          "covers_limitations": true,
+          "covers_costs": true,
+          "covers_future_trends": true,
+          "has_multiple_models": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests multi-dimensional analysis of complex topic",
+        "tags": [
+          "llm",
+          "analysis",
+          "multi-aspect"
+        ]
+      },
+      "execution_time": 52.83838605880737,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_capabilities": false,
+        "covers_limitations": false,
+        "covers_costs": false,
+        "covers_future_trends": false,
+        "has_multiple_models": false,
+        "plan_created": false,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 6 steps, got 0",
+        "Expected 8 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-003",
+        "query": "Technical deep-dive into quantum error correction: surface codes, topological codes, and vendor implementations (IBM, Google, IonQ)",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 8,
+        "success_criteria": {
+          "covers_surface_codes": true,
+          "covers_topological_codes": true,
+          "covers_ibm": true,
+          "covers_google": true,
+          "covers_ionq": true,
+          "has_technical_depth": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests technical deep-dive with multiple subtopics",
+        "tags": [
+          "quantum",
+          "error-correction",
+          "technical",
+          "deep-dive"
+        ]
+      },
+      "execution_time": 42.57192826271057,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 12,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_surface_codes": false,
+        "covers_topological_codes": false,
+        "covers_ibm": false,
+        "covers_google": false,
+        "covers_ionq": false,
+        "has_technical_depth": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": []
+    },
+    {
+      "test_query": {
+        "id": "MULTI-004",
+        "query": "Compare database options for AI applications: PostgreSQL with pgvector, Pinecone, Weaviate, and ChromaDB",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_postgresql_pgvector": true,
+          "covers_pinecone": true,
+          "covers_weaviate": true,
+          "covers_chromadb": true,
+          "has_performance_comparison": true,
+          "has_use_case_recommendations": true,
+          "plan_created": true
+        },
+        "description": "Tests 4-way database comparison for specific use case",
+        "tags": [
+          "database",
+          "vector-db",
+          "ai",
+          "comparison"
+        ]
+      },
+      "execution_time": 32.224308013916016,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_postgresql_pgvector": false,
+        "covers_pinecone": false,
+        "covers_weaviate": false,
+        "covers_chromadb": false,
+        "has_performance_comparison": false,
+        "has_use_case_recommendations": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 6 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-005",
+        "query": "Evaluate cloud providers for machine learning: AWS SageMaker, Google Vertex AI, Azure ML, and Databricks",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_aws": true,
+          "covers_google": true,
+          "covers_azure": true,
+          "covers_databricks": true,
+          "has_pricing": true,
+          "has_comparison": true,
+          "plan_created": true
+        },
+        "description": "Tests cloud platform comparison for ML",
+        "tags": [
+          "cloud",
+          "machine-learning",
+          "platform-comparison"
+        ]
+      },
+      "execution_time": 52.97159790992737,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_aws": false,
+        "covers_google": false,
+        "covers_azure": false,
+        "covers_databricks": false,
+        "has_pricing": false,
+        "has_comparison": false,
+        "plan_created": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 6 steps, got 0",
+        "Expected 6 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-006",
+        "query": "Analyze retrieval-augmented generation (RAG) approaches: naive RAG, advanced RAG, and modular RAG with examples",
+        "category": "multi_aspect",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 5,
+        "success_criteria": {
+          "covers_naive_rag": true,
+          "covers_advanced_rag": true,
+          "covers_modular_rag": true,
+          "has_examples": true,
+          "has_comparison": true,
+          "plan_created": true
+        },
+        "description": "Tests RAG architecture comparison",
+        "tags": [
+          "rag",
+          "ai",
+          "architecture"
+        ]
+      },
+      "execution_time": 45.429075956344604,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 42,
+      "has_exact_quotes": false,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_naive_rag": false,
+        "covers_advanced_rag": false,
+        "covers_modular_rag": false,
+        "has_examples": false,
+        "has_comparison": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 6",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-007",
+        "query": "Compare programming languages for data science: Python, R, Julia, and SQL - strengths, weaknesses, and use cases",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_python": true,
+          "covers_r": true,
+          "covers_julia": true,
+          "covers_sql": true,
+          "has_strengths_weaknesses": true,
+          "has_use_cases": true,
+          "plan_created": true
+        },
+        "description": "Tests 4-language comparison for data science",
+        "tags": [
+          "programming",
+          "data-science",
+          "comparison"
+        ]
+      },
+      "execution_time": 56.552643060684204,
+      "plan_created": true,
+      "num_steps": 7,
+      "steps_completed": 0,
+      "num_sources": 33,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_python": false,
+        "covers_r": false,
+        "covers_julia": false,
+        "covers_sql": false,
+        "has_strengths_weaknesses": false,
+        "has_use_cases": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 6 steps, got 7"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "MULTI-008",
+        "query": "Examine AI agent architectures: ReAct, Plan-and-Execute, Reflection, and Multi-Agent systems",
+        "category": "multi_aspect",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_react": true,
+          "covers_plan_execute": true,
+          "covers_reflection": true,
+          "covers_multi_agent": true,
+          "has_technical_details": true,
+          "has_comparison": true,
+          "plan_created": true
+        },
+        "description": "Tests agent architecture pattern comparison",
+        "tags": [
+          "ai-agents",
+          "architecture",
+          "patterns"
+        ]
+      },
+      "execution_time": 9.416423320770264,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_react": false,
+        "covers_plan_execute": false,
+        "covers_reflection": false,
+        "covers_multi_agent": false,
+        "has_technical_details": false,
+        "has_comparison": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 6 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-001",
+        "query": "Summarize the latest AI developments and breakthroughs from November 2025",
+        "category": "time_constrained",
+        "expected_steps": 6,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_find_multiple_sources"
+        ],
+        "min_sources": 8,
+        "success_criteria": {
+          "has_recent_sources": true,
+          "sources_from_2025": true,
+          "covers_multiple_developments": true,
+          "has_dates": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests time-constrained comprehensive research",
+        "tags": [
+          "time-constrained",
+          "recent",
+          "ai",
+          "comprehensive"
+        ]
+      },
+      "execution_time": 59.00680208206177,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 22,
+      "has_exact_quotes": false,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_recent_sources": false,
+        "sources_from_2025": false,
+        "covers_multiple_developments": false,
+        "has_dates": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-002",
+        "query": "What are the latest quantum computing achievements in 2025?",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 5,
+        "success_criteria": {
+          "sources_from_2025": true,
+          "has_achievements": true,
+          "has_dates": true,
+          "has_verification": true,
+          "plan_created": true
+        },
+        "description": "Tests recent achievement tracking",
+        "tags": [
+          "time-constrained",
+          "quantum",
+          "2025"
+        ]
+      },
+      "execution_time": 1.3322019577026367,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "sources_from_2025": false,
+        "has_achievements": false,
+        "has_dates": false,
+        "has_verification": false,
+        "plan_created": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 0",
+        "Expected 5 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-003",
+        "query": "Review the most significant open-source AI releases in the past 3 months",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "has_recent_releases": true,
+          "has_significance_assessment": true,
+          "sources_recent": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests rolling time window research",
+        "tags": [
+          "time-constrained",
+          "open-source",
+          "ai"
+        ]
+      },
+      "execution_time": 52.43163323402405,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 34,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_recent_releases": false,
+        "has_significance_assessment": false,
+        "sources_recent": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-004",
+        "query": "What are the latest developments in LangChain and LangGraph (2025)?",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 5,
+        "success_criteria": {
+          "covers_langchain": true,
+          "covers_langgraph": true,
+          "sources_from_2025": true,
+          "has_version_info": true,
+          "plan_created": true
+        },
+        "description": "Tests framework-specific recent updates",
+        "tags": [
+          "time-constrained",
+          "langchain",
+          "langgraph"
+        ]
+      },
+      "execution_time": 33.931077003479004,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 20,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_langchain": false,
+        "covers_langgraph": false,
+        "sources_from_2025": false,
+        "has_version_info": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": []
+    },
+    {
+      "test_query": {
+        "id": "TIME-005",
+        "query": "Summarize recent breakthroughs in protein folding and AlphaFold developments (2024-2025)",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 5,
+        "success_criteria": {
+          "covers_protein_folding": true,
+          "covers_alphafold": true,
+          "sources_recent": true,
+          "has_breakthroughs": true,
+          "plan_created": true
+        },
+        "description": "Tests biotech recent research",
+        "tags": [
+          "time-constrained",
+          "biotech",
+          "alphafold"
+        ]
+      },
+      "execution_time": 43.817352056503296,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_protein_folding": false,
+        "covers_alphafold": false,
+        "sources_recent": false,
+        "has_breakthroughs": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-006",
+        "query": "What are the latest cybersecurity threats and vulnerabilities disclosed in the past month?",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "has_recent_threats": true,
+          "has_cve_numbers": true,
+          "sources_very_recent": true,
+          "has_severity_info": true,
+          "plan_created": true
+        },
+        "description": "Tests very recent security research",
+        "tags": [
+          "time-constrained",
+          "security",
+          "threats"
+        ]
+      },
+      "execution_time": 71.9695611000061,
+      "plan_created": true,
+      "num_steps": 5,
+      "steps_completed": 0,
+      "num_sources": 24,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "has_recent_threats": false,
+        "has_cve_numbers": false,
+        "sources_very_recent": false,
+        "has_severity_info": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": []
+    },
+    {
+      "test_query": {
+        "id": "TIME-007",
+        "query": "Review the latest Claude and GPT model releases and capabilities (2025)",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 5,
+        "success_criteria": {
+          "covers_claude": true,
+          "covers_gpt": true,
+          "has_capabilities": true,
+          "sources_from_2025": true,
+          "plan_created": true
+        },
+        "description": "Tests LLM release tracking",
+        "tags": [
+          "time-constrained",
+          "llm",
+          "claude",
+          "gpt"
+        ]
+      },
+      "execution_time": 57.604209899902344,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 31,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_claude": false,
+        "covers_gpt": false,
+        "has_capabilities": false,
+        "sources_from_2025": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "TIME-008",
+        "query": "What are the newest trends in vector databases and embedding models this year?",
+        "category": "time_constrained",
+        "expected_steps": 5,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_use_recent_sources",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 6,
+        "success_criteria": {
+          "covers_vector_dbs": true,
+          "covers_embedding_models": true,
+          "has_trends": true,
+          "sources_from_2025": true,
+          "plan_created": true
+        },
+        "description": "Tests emerging technology trend tracking",
+        "tags": [
+          "time-constrained",
+          "vector-db",
+          "embeddings"
+        ]
+      },
+      "execution_time": 53.10758185386658,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 29,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_vector_dbs": false,
+        "covers_embedding_models": false,
+        "has_trends": false,
+        "sources_from_2025": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 5 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-001",
+        "query": "Comprehensive analysis of renewable energy technologies: solar, wind, hydro, geothermal, and nuclear - covering technology, economics, environmental impact, and future outlook",
+        "category": "comprehensive",
+        "expected_steps": 8,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference",
+          "must_verify_completion"
+        ],
+        "min_sources": 12,
+        "success_criteria": {
+          "covers_all_5_technologies": true,
+          "has_technology_section": true,
+          "has_economics_section": true,
+          "has_environmental_section": true,
+          "has_future_outlook": true,
+          "plan_created": true,
+          "plan_has_8_steps": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive multi-dimensional analysis",
+        "tags": [
+          "comprehensive",
+          "renewable-energy",
+          "multi-dimensional"
+        ]
+      },
+      "execution_time": 55.174577951431274,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_all_5_technologies": false,
+        "has_technology_section": false,
+        "has_economics_section": false,
+        "has_environmental_section": false,
+        "has_future_outlook": false,
+        "plan_created": false,
+        "plan_has_8_steps": false,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 8 steps, got 0",
+        "Expected 12 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-002",
+        "query": "Exhaustive guide to building production-ready AI applications: architecture patterns, frameworks, databases, deployment, monitoring, security, and costs",
+        "category": "comprehensive",
+        "expected_steps": 8,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_verify_completion"
+        ],
+        "min_sources": 15,
+        "success_criteria": {
+          "covers_architecture": true,
+          "covers_frameworks": true,
+          "covers_databases": true,
+          "covers_deployment": true,
+          "covers_monitoring": true,
+          "covers_security": true,
+          "covers_costs": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive production guide",
+        "tags": [
+          "comprehensive",
+          "ai",
+          "production",
+          "guide"
+        ]
+      },
+      "execution_time": 62.06286907196045,
+      "plan_created": true,
+      "num_steps": 8,
+      "steps_completed": 0,
+      "num_sources": 50,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_architecture": false,
+        "covers_frameworks": false,
+        "covers_databases": false,
+        "covers_deployment": false,
+        "covers_monitoring": false,
+        "covers_security": false,
+        "covers_costs": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": []
+    },
+    {
+      "test_query": {
+        "id": "COMP-003",
+        "query": "Complete overview of modern web development: frontend frameworks (React, Vue, Svelte, Angular), backend (Node.js, Python, Go), databases (SQL vs NoSQL), deployment (cloud platforms), and best practices",
+        "category": "comprehensive",
+        "expected_steps": 9,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous"
+        ],
+        "min_sources": 15,
+        "success_criteria": {
+          "covers_frontend": true,
+          "covers_backend": true,
+          "covers_databases": true,
+          "covers_deployment": true,
+          "covers_best_practices": true,
+          "has_framework_comparisons": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive web dev stack overview",
+        "tags": [
+          "comprehensive",
+          "web-development",
+          "full-stack"
+        ]
+      },
+      "execution_time": 50.58044910430908,
+      "plan_created": true,
+      "num_steps": 6,
+      "steps_completed": 0,
+      "num_sources": 41,
+      "has_exact_quotes": true,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_frontend": false,
+        "covers_backend": false,
+        "covers_databases": false,
+        "covers_deployment": false,
+        "covers_best_practices": false,
+        "has_framework_comparisons": false,
+        "plan_created": true,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 9 steps, got 6"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-004",
+        "query": "Comprehensive machine learning lifecycle guide: problem formulation, data collection, preprocessing, model selection, training, evaluation, deployment, monitoring, and retraining",
+        "category": "comprehensive",
+        "expected_steps": 10,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous",
+          "must_verify_completion"
+        ],
+        "min_sources": 12,
+        "success_criteria": {
+          "covers_all_9_stages": true,
+          "has_best_practices": true,
+          "has_tools_recommendations": true,
+          "plan_created": true,
+          "plan_has_10_steps": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive ML lifecycle coverage",
+        "tags": [
+          "comprehensive",
+          "machine-learning",
+          "lifecycle"
+        ]
+      },
+      "execution_time": 63.88522696495056,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_all_9_stages": false,
+        "has_best_practices": false,
+        "has_tools_recommendations": false,
+        "plan_created": false,
+        "plan_has_10_steps": false,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 10 steps, got 0",
+        "Expected 12 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-005",
+        "query": "In-depth analysis of AI agent frameworks ecosystem: LangChain, LangGraph, LlamaIndex, CrewAI, AutoGen, DSPy - covering architecture, use cases, strengths, limitations, integration patterns, and selection guide",
+        "category": "comprehensive",
+        "expected_steps": 8,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_find_multiple_sources",
+          "must_cite_with_quotes",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 12,
+        "success_criteria": {
+          "covers_all_6_frameworks": true,
+          "has_architecture_details": true,
+          "has_use_cases": true,
+          "has_strengths_limitations": true,
+          "has_selection_guide": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive framework ecosystem analysis",
+        "tags": [
+          "comprehensive",
+          "ai-agents",
+          "frameworks",
+          "comparison"
+        ]
+      },
+      "execution_time": 47.865878105163574,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_all_6_frameworks": false,
+        "has_architecture_details": false,
+        "has_use_cases": false,
+        "has_strengths_limitations": false,
+        "has_selection_guide": false,
+        "plan_created": false,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 8 steps, got 0",
+        "Expected 12 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-006",
+        "query": "Complete guide to distributed systems: CAP theorem, consensus algorithms (Paxos, Raft), data replication, partitioning strategies, consistency models, failure handling, and monitoring",
+        "category": "comprehensive",
+        "expected_steps": 8,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 10,
+        "success_criteria": {
+          "covers_cap_theorem": true,
+          "covers_consensus": true,
+          "covers_replication": true,
+          "covers_partitioning": true,
+          "covers_consistency": true,
+          "has_technical_depth": true,
+          "plan_created": true
+        },
+        "description": "Tests comprehensive distributed systems guide",
+        "tags": [
+          "comprehensive",
+          "distributed-systems",
+          "technical"
+        ]
+      },
+      "execution_time": 81.90017199516296,
+      "plan_created": true,
+      "num_steps": 9,
+      "steps_completed": 0,
+      "num_sources": 61,
+      "has_exact_quotes": false,
+      "has_source_urls": true,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_cap_theorem": false,
+        "covers_consensus": false,
+        "covers_replication": false,
+        "covers_partitioning": false,
+        "covers_consistency": false,
+        "has_technical_depth": false,
+        "plan_created": true
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 8 steps, got 9",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-007",
+        "query": "Exhaustive analysis of AI safety and alignment: current challenges, proposed solutions (RLHF, constitutional AI, red teaming), research directions, policy considerations, and future outlook",
+        "category": "comprehensive",
+        "expected_steps": 7,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous",
+          "must_cross_reference"
+        ],
+        "min_sources": 10,
+        "success_criteria": {
+          "covers_challenges": true,
+          "covers_rlhf": true,
+          "covers_constitutional_ai": true,
+          "covers_red_teaming": true,
+          "covers_policy": true,
+          "has_future_outlook": true,
+          "plan_created": true
+        },
+        "description": "Tests comprehensive AI safety analysis",
+        "tags": [
+          "comprehensive",
+          "ai-safety",
+          "alignment"
+        ]
+      },
+      "execution_time": 56.065521001815796,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 1,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_challenges": false,
+        "covers_rlhf": false,
+        "covers_constitutional_ai": false,
+        "covers_red_teaming": false,
+        "covers_policy": false,
+        "has_future_outlook": false,
+        "plan_created": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 7 steps, got 0",
+        "Expected 10 sources, got 1",
+        "Missing exact quotes from sources"
+      ]
+    },
+    {
+      "test_query": {
+        "id": "COMP-008",
+        "query": "Complete blockchain ecosystem overview: consensus mechanisms, smart contract platforms (Ethereum, Solana, Cardano), DeFi protocols, NFT standards, scaling solutions (L2s), and security considerations",
+        "category": "comprehensive",
+        "expected_steps": 8,
+        "expected_behaviors": [
+          "must_create_plan",
+          "must_execute_all_steps",
+          "must_cite_with_quotes",
+          "must_find_multiple_sources",
+          "must_be_autonomous"
+        ],
+        "min_sources": 12,
+        "success_criteria": {
+          "covers_consensus": true,
+          "covers_platforms": true,
+          "covers_defi": true,
+          "covers_nfts": true,
+          "covers_scaling": true,
+          "covers_security": true,
+          "plan_created": true,
+          "all_steps_completed": true
+        },
+        "description": "Tests comprehensive blockchain ecosystem coverage",
+        "tags": [
+          "comprehensive",
+          "blockchain",
+          "ecosystem"
+        ]
+      },
+      "execution_time": 2.5257506370544434,
+      "plan_created": false,
+      "num_steps": 0,
+      "steps_completed": 0,
+      "num_sources": 0,
+      "has_exact_quotes": false,
+      "has_source_urls": false,
+      "autonomy_score": 0.5,
+      "success_criteria_met": {
+        "covers_consensus": false,
+        "covers_platforms": false,
+        "covers_defi": false,
+        "covers_nfts": false,
+        "covers_scaling": false,
+        "covers_security": false,
+        "plan_created": false,
+        "all_steps_completed": false
+      },
+      "overall_pass": false,
+      "notes": [
+        "Expected 8 steps, got 0",
+        "Expected 12 sources, got 0",
+        "Missing exact quotes from sources"
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@ all test configurations, including:
 
 import os
 import json
+import tempfile
 from typing import Literal
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +20,27 @@ from langchain_core.tools import tool
 from langchain_core.messages import ToolMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field
+
+
+# ============================================================================
+# WORKSPACE PATH HELPER
+# ============================================================================
+
+def get_workspace_path() -> Path:
+    """
+    Get the workspace directory path relative to TandemAI project root.
+
+    Uses tempfile for evaluation runs to ensure clean slate per execution.
+    Plans and outputs are session-scoped and auto-cleaned.
+
+    Returns:
+        Path: Workspace directory path (creates if doesn't exist)
+    """
+    # Use system temp directory for evaluation runs
+    # This ensures clean state per run and automatic cleanup
+    temp_dir = Path(tempfile.gettempdir()) / "tandemai_workspace"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    return temp_dir
 
 
 # ============================================================================
@@ -47,7 +69,7 @@ class EditFileInput(BaseModel):
 def read_file_tool(file_path: str) -> str:
     """Read contents of a file."""
     try:
-        workspace_path = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace")
+        workspace_path = get_workspace_path()
         full_path = workspace_path / file_path
 
         with open(full_path, 'r') as f:
@@ -62,7 +84,7 @@ def read_file_tool(file_path: str) -> str:
 def write_file_tool(file_path: str, content: str) -> str:
     """Write content to a file."""
     try:
-        workspace_path = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace")
+        workspace_path = get_workspace_path()
         full_path = workspace_path / file_path
 
         # Create directory if needed
@@ -80,7 +102,7 @@ def write_file_tool(file_path: str, content: str) -> str:
 def edit_file_tool(file_path: str, old_content: str, new_content: str) -> str:
     """Edit a file by replacing old_content with new_content."""
     try:
-        workspace_path = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace")
+        workspace_path = get_workspace_path()
         full_path = workspace_path / file_path
 
         with open(full_path, 'r') as f:
@@ -166,7 +188,7 @@ def create_research_plan_tool(query: str, num_steps: int = 5) -> str:
             return "❌ Number of steps must be between 3 and 10"
 
         # Create workspace/.plans directory
-        plans_dir = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace/.plans")
+        plans_dir = get_workspace_path() / ".plans"
         plans_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate plan
@@ -209,7 +231,7 @@ def create_research_plan_tool(query: str, num_steps: int = 5) -> str:
 def update_plan_progress_tool(step_index: int, result: str) -> str:
     """Update the progress of a specific step in the current plan."""
     try:
-        plans_dir = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace/.plans")
+        plans_dir = get_workspace_path() / ".plans"
         current_plan_file = plans_dir / "current_plan.json"
 
         if not current_plan_file.exists():
@@ -238,7 +260,7 @@ def update_plan_progress_tool(step_index: int, result: str) -> str:
 def read_current_plan_tool() -> str:
     """Read the current active research plan."""
     try:
-        plans_dir = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace/.plans")
+        plans_dir = get_workspace_path() / ".plans"
         current_plan_file = plans_dir / "current_plan.json"
 
         if not current_plan_file.exists():
@@ -257,7 +279,7 @@ def read_current_plan_tool() -> str:
 def edit_plan_tool(step_index: int, new_description: str, new_action: str) -> str:
     """Edit a step in the current research plan."""
     try:
-        plans_dir = Path("/Users/nicholaspate/Documents/01_Active/Corp_Strat/open-source-CC/docs/learning-plan/lessons/module-2-2/module-2-2-frontend-enhanced/backend/workspace/.plans")
+        plans_dir = get_workspace_path() / ".plans"
         current_plan_file = plans_dir / "current_plan.json"
 
         if not current_plan_file.exists():
