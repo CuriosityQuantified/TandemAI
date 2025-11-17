@@ -7,8 +7,8 @@ Uses a semaphore to limit concurrency and avoid overwhelming the Gemini API rate
 Usage:
     python evaluation/run_parallel_baseline.py
 
-Expected runtime: ~10-15 minutes (vs ~30-60 minutes sequential)
-Note: max_concurrency=3 to stay within Gemini API quota (1M tokens/minute)
+Expected runtime: ~15-20 minutes (vs ~30-60 minutes sequential)
+Note: max_concurrency=2 to stay within Gemini API quota (1M tokens/minute)
 """
 
 import sys
@@ -28,14 +28,14 @@ from backend.prompts.versions.researcher.v3_0 import get_researcher_prompt as ge
 
 
 async def run_parallel_baseline_evaluation(
-    max_concurrency: int = 3,
+    max_concurrency: int = 2,
     save_results: bool = True
 ):
     """
     Run all 32 queries on researcher v3.0 in parallel.
 
     Args:
-        max_concurrency: Maximum concurrent agent executions (default: 3)
+        max_concurrency: Maximum concurrent agent executions (default: 2)
         save_results: Whether to save results to JSON file
 
     Returns:
@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
     # Run async main function
     results = asyncio.run(run_parallel_baseline_evaluation(
-        max_concurrency=3,  # Reduced to avoid Gemini API rate limits
+        max_concurrency=2,  # Reduced to avoid Gemini API rate limits
         save_results=True
     ))
 
