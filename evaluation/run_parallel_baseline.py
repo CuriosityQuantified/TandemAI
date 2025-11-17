@@ -1,13 +1,14 @@
 """
 Run Full Baseline Evaluation (32 queries) on Researcher v3.0 - PARALLEL EXECUTION
 
-This script runs all 32 test queries in parallel using asyncio for maximum speed.
-Uses a semaphore to limit concurrency and avoid overwhelming the API.
+This script runs all 32 test queries in parallel using asyncio for improved speed.
+Uses a semaphore to limit concurrency and avoid overwhelming the Gemini API rate limits.
 
 Usage:
     python evaluation/run_parallel_baseline.py
 
-Expected runtime: ~3-5 minutes (vs ~30-60 minutes sequential)
+Expected runtime: ~10-15 minutes (vs ~30-60 minutes sequential)
+Note: max_concurrency=3 to stay within Gemini API quota (1M tokens/minute)
 """
 
 import sys
@@ -27,14 +28,14 @@ from backend.prompts.versions.researcher.v3_0 import get_researcher_prompt as ge
 
 
 async def run_parallel_baseline_evaluation(
-    max_concurrency: int = 10,
+    max_concurrency: int = 3,
     save_results: bool = True
 ):
     """
     Run all 32 queries on researcher v3.0 in parallel.
 
     Args:
-        max_concurrency: Maximum concurrent agent executions (default: 10)
+        max_concurrency: Maximum concurrent agent executions (default: 3)
         save_results: Whether to save results to JSON file
 
     Returns:
@@ -195,7 +196,7 @@ if __name__ == "__main__":
 
     # Run async main function
     results = asyncio.run(run_parallel_baseline_evaluation(
-        max_concurrency=10,  # Adjust based on API limits
+        max_concurrency=3,  # Reduced to avoid Gemini API rate limits
         save_results=True
     ))
 
