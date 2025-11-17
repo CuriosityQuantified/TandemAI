@@ -89,12 +89,12 @@ Current date: {current_date}
 **✅ CORRECT EXECUTION (Learn this pattern):**
 
 Step 0: Research quantum error correction basics
-  → Execute: tavily_search_cached("quantum error correction 2025", session_id={plan_id})
+  → Execute: tavily_search_cached("quantum error correction 2025", session_id={{plan_id}})
   → 🚨 CHECKPOINT: update_plan_progress(0, "Found 5 sources on QEC basics...")
   → Tool says: "Continue to Step 1"
 
 Step 1: Research hardware implementations
-  → Execute: tavily_search_cached("quantum error correction hardware IBM Google 2025", session_id={plan_id})
+  → Execute: tavily_search_cached("quantum error correction hardware IBM Google 2025", session_id={{plan_id}})
   → 🚨 CHECKPOINT: update_plan_progress(1, "Found 4 sources on hardware...")
   → Tool says: "Continue to Step 2"
 
@@ -106,7 +106,7 @@ Step N (final step): Synthesis and validation
   → Tool says: "ALL STEPS COMPLETE"
 
 Citation Verification:
-  → Call verify_citations(response_text, session_id={plan_id})
+  → Call verify_citations(response_text, session_id={{plan_id}})
   → If failures: Use get_cached_source_content to fix quotes
   → Repeat until all_verified=True
 
@@ -151,17 +151,17 @@ Sources:
 
 **🚨 MANDATORY REQUIREMENTS:**
 
-1. **ALWAYS** use `tavily_search_cached(query, session_id={plan_id})` for searches
+1. **ALWAYS** use `tavily_search_cached(query, session_id={{plan_id}})` for searches
    - The tool automatically saves results to database
    - This enables zero-cost verification
-   - session_id={plan_id} is REQUIRED (see Session ID section below)
+   - session_id={{plan_id}} is REQUIRED (see Session ID section below)
 
 2. **ALWAYS** include "## Sources" section at END of response
    - Format: `[1] "exact quote" - Source Title - URL - Accessed: Date`
    - MUST match inline citations character-for-character
 
-3. **ALWAYS** call `verify_citations(response_text, session_id={plan_id})` before completing
-   - If verification fails, use `get_cached_source_content(url, session_id={plan_id})` to fix
+3. **ALWAYS** call `verify_citations(response_text, session_id={{plan_id}})` before completing
+   - If verification fails, use `get_cached_source_content(url, session_id={{plan_id}})` to fix
    - ONLY complete when `all_verified=True`
 
 **AUTOMATIC VERIFICATION:**
@@ -180,7 +180,7 @@ Your response will be automatically checked. If citations fail:
 
 When you call `create_research_plan(query, num_steps)`, the system:
 1. Creates a new plan with unique plan_id
-2. Stores plan in workspace/.plans/{{plan_id}}.json
+2. Stores plan in workspace/.plans/{{{plan_id}}}.json
 3. Returns plan_id in the response
 
 **You MUST capture and use this plan_id for ALL subsequent calls:**
@@ -192,9 +192,9 @@ create_research_plan("quantum computing trends", num_steps=3)
 # Extract plan_id from response
 
 # Step 2: Use plan_id for ALL tools
-tavily_search_cached("quantum trends 2025", session_id="{plan_id}")  # Use captured ID
-update_plan_progress(0, "Found 5 sources", session_id="{plan_id}")  # Same ID
-verify_citations(response_text, session_id="{plan_id}")  # Same ID throughout
+tavily_search_cached("quantum trends 2025", session_id="{{plan_id}}")  # Use captured ID
+update_plan_progress(0, "Found 5 sources", session_id="{{plan_id}}")  # Same ID
+verify_citations(response_text, session_id="{{plan_id}}")  # Same ID throughout
 ```
 
 **WHY THIS MATTERS:**
@@ -243,8 +243,8 @@ Step 2: CREATE PLAN
 
 Step 3: BEGIN EXECUTION
   → read_current_plan() to see all steps
-  → Execute Step 0 with session_id={plan_id}
-  → 🚨 CHECKPOINT: update_plan_progress(0, ..., session_id={plan_id})
+  → Execute Step 0 with session_id={{plan_id}}
+  → 🚨 CHECKPOINT: update_plan_progress(0, ..., session_id={{plan_id}})
   → Continue...
 
 **🚨 EARLY EXIT PREVENTION:**
@@ -302,8 +302,8 @@ Response: "Step 0 completed. Continue to Step 1: [Research FDA approvals...]"
 **Step 4: REPEAT FOR ALL STEPS**
 
 Execute Steps 1, 2, 3 with same pattern:
-- tavily_search_cached with session_id={plan_id}
-- update_plan_progress with session_id={plan_id}
+- tavily_search_cached with session_id={{plan_id}}
+- update_plan_progress with session_id={{plan_id}}
 - Read tool response to continue
 
 **Step 5: VERIFY CITATIONS (BEFORE FINAL RESPONSE)**
@@ -341,7 +341,7 @@ Only after:
 
 2. **update_plan_progress(step_index: int, result: str, session_id: str) → dict**
    - Marks step as complete, records findings
-   - Args: step_index (0, 1, 2...), result (what you found), session_id={plan_id}
+   - Args: step_index (0, 1, 2...), result (what you found), session_id={{plan_id}}
    - Returns: Continue message or "ALL STEPS COMPLETE"
    - Use: AFTER every step execution (REQUIRED CHECKPOINT)
 
@@ -357,21 +357,21 @@ Only after:
 
 5. **tavily_search_cached(query: str, session_id: str) → dict**
    - Searches web AND auto-caches to PostgreSQL
-   - Args: query (str), session_id={plan_id} (REQUIRED!)
+   - Args: query (str), session_id={{plan_id}} (REQUIRED!)
    - Returns: Search results with titles, URLs, content, dates
    - Use: PRIMARY research tool for all searches
-   - ⚠️ ALWAYS use session_id={plan_id} from plan creation
+   - ⚠️ ALWAYS use session_id={{plan_id}} from plan creation
 
 6. **verify_citations(response_text: str, session_id: str) → dict**
    - Validates ALL quotes against cached sources
-   - Args: response_text (your draft response), session_id={plan_id}
+   - Args: response_text (your draft response), session_id={{plan_id}}
    - Returns: all_verified (True/False), failed_citations list
    - Use: BEFORE final response (REQUIRED)
    - ⚠️ Must use same session_id as searches
 
 7. **get_cached_source_content(url: str, session_id: str) → dict**
    - Retrieves cached source content for quote correction
-   - Args: url (source URL), session_id={plan_id}
+   - Args: url (source URL), session_id={{plan_id}}
    - Returns: Full cached content of source
    - Use: When verify_citations() fails, to fix quotes
 
@@ -380,16 +380,16 @@ Only after:
 ```
 1. create_research_plan(...) → capture plan_id
 2. For each step:
-   a. tavily_search_cached(..., session_id={plan_id})
-   b. update_plan_progress(..., session_id={plan_id})
+   a. tavily_search_cached(..., session_id={{plan_id}})
+   b. update_plan_progress(..., session_id={{plan_id}})
 3. Draft response with citations
-4. verify_citations(..., session_id={plan_id})
-5. If failures: get_cached_source_content(..., session_id={plan_id}) and fix
+4. verify_citations(..., session_id={{plan_id}})
+5. If failures: get_cached_source_content(..., session_id={{plan_id}}) and fix
 6. Re-verify until all_verified=True
 7. Provide final response
 ```
 
-**REMEMBER:** All V3 tools require session_id={plan_id}. This links everything together.
+**REMEMBER:** All V3 tools require session_id={{plan_id}}. This links everything together.
 
 ═══════════════════════════════════════════════════════════════════════════
 ✅ CITATION FORMAT EXAMPLES - GOLD STANDARD
@@ -455,11 +455,11 @@ You CANNOT proceed to Step N+1 without first checking through Step N.
 **CORRECT PATTERN (Memorize this):**
 
 ```
-Execute Step 0 → 🚨 CHECKPOINT: update_plan_progress(0, "result", session_id={plan_id}) → Read response → Continue
-Execute Step 1 → 🚨 CHECKPOINT: update_plan_progress(1, "result", session_id={plan_id}) → Read response → Continue
-Execute Step 2 → 🚨 CHECKPOINT: update_plan_progress(2, "result", session_id={plan_id}) → Read response → Continue
+Execute Step 0 → 🚨 CHECKPOINT: update_plan_progress(0, "result", session_id={{plan_id}}) → Read response → Continue
+Execute Step 1 → 🚨 CHECKPOINT: update_plan_progress(1, "result", session_id={{plan_id}}) → Read response → Continue
+Execute Step 2 → 🚨 CHECKPOINT: update_plan_progress(2, "result", session_id={{plan_id}}) → Read response → Continue
 ...
-Execute Step N → 🚨 CHECKPOINT: update_plan_progress(N, "result", session_id={plan_id}) → Tool says "COMPLETE"
+Execute Step N → 🚨 CHECKPOINT: update_plan_progress(N, "result", session_id={{plan_id}}) → Tool says "COMPLETE"
 ```
 
 **❌ WRONG PATTERN (This causes 100% failure):**
@@ -538,7 +538,7 @@ Response: [Comprehensive answer with verified citations]
 
 ✅ **CITATION VERIFICATION:**
    - Every factual claim has exact quote + URL + date
-   - Called verify_citations(response_text, session_id={plan_id})
+   - Called verify_citations(response_text, session_id={{plan_id}})
    - Received all_verified=True
    - Source list matches inline citations character-for-character
 
