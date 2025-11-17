@@ -41,12 +41,12 @@ sys.path.insert(0, str(project_root))
 
 # Import evaluation framework
 from evaluation.test_suite import get_test_suite, TestQuery
-from evaluation.judge_agents import (
-    JudgeRegistry,
-    EvaluationResult,
-    run_evaluation_for_query
-)
+from evaluation.judge_agents import JudgeRegistry, EvaluationResult
 from evaluation.rubrics import get_all_rubrics
+
+# Import agent invocation and judge integration
+from evaluation.agent_invoker import invoke_researcher_with_prompt
+from evaluation.judge_integration import run_evaluation_for_query
 
 
 # ============================================================================
@@ -146,62 +146,57 @@ def run_version_evaluation(
 
     results = []
 
-    # TODO: Implement actual agent invocation
-    # For now, this is a placeholder structure
-    # In full implementation, this would:
-    # 1. Load the prompt version
-    # 2. Configure agent with that prompt
-    # 3. Run agent on each test query
-    # 4. Collect agent responses
-    # 5. Run judges on responses
-    # 6. Aggregate results
-
+    # Real implementation: Invoke agent and run judges
     for i, query in enumerate(test_queries):
         print(f"[{i+1}/{len(test_queries)}] Running query: {query.id}")
+        print(f"  Query: {query.query[:60]}...")
 
-        # Placeholder: In real implementation, invoke agent with version's prompt
-        # agent_response = invoke_agent_with_prompt(
-        #     prompt_func=version_info['get_prompt_func'],
-        #     query=query.query
-        # )
-        agent_response = f"Placeholder response for {query.id}"
+        try:
+            # 1. Invoke agent with version's prompt
+            print(f"  → Invoking {version_info['version_id']} agent...")
+            agent_response = invoke_researcher_with_prompt(
+                prompt_func=version_info['get_prompt_func'],
+                query=query.query,
+                config={
+                    "configurable": {"thread_id": f"eval_{version_info['version_id']}_{query.id}"},
+                    "recursion_limit": 50
+                }
+            )
+            print(f"  ✓ Agent response: {len(agent_response)} chars")
 
-        # Run judges on response
-        # eval_result = run_evaluation_for_query(
-        #     query=query,
-        #     agent_response=agent_response,
-        #     judge_model=judge_model
-        # )
+            # 2. Run judges on response
+            print(f"  → Running 7 judges...")
+            eval_result = run_evaluation_for_query(
+                query=query,
+                agent_response=agent_response,
+                judge_model=judge_model,
+                verbose=False
+            )
 
-        # Placeholder result
-        eval_result = EvaluationResult(
-            query_id=query.id,
-            planning_quality=0.8,
-            execution_completeness=4.0,
-            source_quality=4.0,
-            citation_accuracy=0.9,
-            answer_completeness=4.0,
-            factual_accuracy=0.85,
-            autonomy_score=1.0,
-            judge_reasoning={}
-        )
+            # Set prompt version
+            eval_result.prompt_version = version_info['version_id']
+            eval_result.query_text = query.query
+            eval_result.researcher_response = agent_response
 
-        results.append(eval_result)
+            print(f"  ✓ Overall score: {eval_result.overall_score:.2f}/7.0")
 
-    # Aggregate metrics
+            results.append(eval_result)
+
+        except Exception as e:
+            print(f"  ✗ FAILED: {str(e)}")
+            # Continue with next query even if this one fails
+            continue
+
+    # Aggregate metrics (using .score attribute from Binary/ScaledScore objects)
     aggregate_metrics = {
-        "planning_quality_mean": statistics.mean([r.planning_quality for r in results]),
-        "execution_completeness_mean": statistics.mean([r.execution_completeness for r in results]),
-        "source_quality_mean": statistics.mean([r.source_quality for r in results]),
-        "citation_accuracy_mean": statistics.mean([r.citation_accuracy for r in results]),
-        "answer_completeness_mean": statistics.mean([r.answer_completeness for r in results]),
-        "factual_accuracy_mean": statistics.mean([r.factual_accuracy for r in results]),
-        "autonomy_score_mean": statistics.mean([r.autonomy_score for r in results]),
-        "overall_score_mean": statistics.mean([
-            r.planning_quality + r.execution_completeness + r.source_quality +
-            r.citation_accuracy + r.answer_completeness + r.factual_accuracy + r.autonomy_score
-            for r in results
-        ]) / 7.0,
+        "planning_quality_mean": statistics.mean([r.planning_quality.score for r in results]),
+        "execution_completeness_mean": statistics.mean([r.execution_completeness.score for r in results]),
+        "source_quality_mean": statistics.mean([r.source_quality.score for r in results]),
+        "citation_accuracy_mean": statistics.mean([r.citation_accuracy.score for r in results]),
+        "answer_completeness_mean": statistics.mean([r.answer_completeness.score for r in results]),
+        "factual_accuracy_mean": statistics.mean([r.factual_accuracy.score for r in results]),
+        "autonomy_score_mean": statistics.mean([r.autonomy_score.score for r in results]),
+        "overall_score_mean": statistics.mean([r.overall_score for r in results]),
     }
 
     # Save results if output_dir provided
