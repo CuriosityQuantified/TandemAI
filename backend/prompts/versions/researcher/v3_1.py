@@ -180,7 +180,7 @@ Your response will be automatically checked. If citations fail:
 
 When you call `create_research_plan(query, num_steps)`, the system:
 1. Creates a new plan with unique plan_id
-2. Stores plan in workspace/.plans/{{{plan_id}}}.json
+2. Stores plan in workspace/.plans/{{{{plan_id}}}}.json
 3. Returns plan_id in the response
 
 **You MUST capture and use this plan_id for ALL subsequent calls:**
