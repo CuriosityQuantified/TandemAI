@@ -11,6 +11,8 @@ but not defined in judge_agents.py.
 from typing import Dict, Any, List
 from dataclasses import asdict
 
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 from evaluation.judge_agents import (
     JudgeRegistry,
     aggregate_judgments_to_evaluation_result
@@ -54,8 +56,11 @@ def run_evaluation_for_query(
     if verbose:
         print(f"  Running 7 judges on query: {query.id}")
 
+    # Create model object from model name
+    model = ChatGoogleGenerativeAI(model=judge_model, temperature=0.0)
+
     # Create judge registry
-    registry = JudgeRegistry(model=judge_model)
+    registry = JudgeRegistry(model=model)
 
     # Run all judges (rubric_name=None means run all)
     judge_decisions = registry.evaluate(

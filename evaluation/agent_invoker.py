@@ -9,9 +9,10 @@ dynamic prompt injection instead of hardcoded benchmark_researcher_prompt.
 """
 
 import os
+import asyncio
 from pathlib import Path
 from dotenv import load_dotenv
-from typing import Callable, Dict, Any
+from typing import Callable, Dict, Any, List
 from datetime import datetime
 
 # Load environment variables
@@ -263,6 +264,158 @@ def invoke_researcher_batch(
                 print(f"  ✗ Failed: {str(e)}")
 
     return responses
+
+
+# ==============================================================================
+# ASYNC INVOCATION (for parallel execution with asyncio)
+# ==============================================================================
+
+async def async_invoke_researcher_with_prompt(
+    prompt_func: Callable[[str], str],
+    query: str,
+    config: Dict[str, Any] = None,
+    semaphore: asyncio.Semaphore = None
+) -> str:
+    """
+    Async version of invoke_researcher_with_prompt for parallel execution.
+
+    Uses thread pool executor to run synchronous LangGraph invoke() without blocking.
+
+    Args:
+        prompt_func: Prompt function from versioned prompt file
+        query: Research query string
+        config: Optional LangGraph config dict
+        semaphore: Optional semaphore to limit concurrency
+
+    Returns:
+        Final response text from the researcher agent
+
+    Example:
+        >>> import asyncio
+        >>> async def run_parallel():
+        ...     tasks = [async_invoke_researcher_with_prompt(get_v3_0_prompt, q) for q in queries]
+        ...     results = await asyncio.gather(*tasks)
+        ...     return results
+        >>> asyncio.run(run_parallel())
+    """
+    # Use semaphore to limit concurrency if provided
+    if semaphore:
+        async with semaphore:
+            return await _async_invoke_researcher(prompt_func, query, config)
+    else:
+        return await _async_invoke_researcher(prompt_func, query, config)
+
+
+async def _async_invoke_researcher(
+    prompt_func: Callable[[str], str],
+    query: str,
+    config: Dict[str, Any] = None
+) -> str:
+    """Internal async invocation - runs sync function in executor to avoid blocking."""
+    loop = asyncio.get_event_loop()
+
+    def _sync_invoke():
+        return invoke_researcher_with_prompt(prompt_func, query, config)
+
+    # Run sync function in thread pool executor (non-blocking)
+    result = await loop.run_in_executor(None, _sync_invoke)
+    return result
+
+
+async def async_invoke_researcher_batch(
+    prompt_func: Callable[[str], str],
+    queries: List[str],
+    max_concurrency: int = 10,
+    verbose: bool = False
+) -> List[str]:
+    """
+    Invoke researcher on multiple queries in parallel using asyncio.
+
+    Dramatically faster than sequential execution - processes all queries concurrently
+    with configurable concurrency limit to avoid overwhelming the API.
+
+    Args:
+        prompt_func: Prompt function from versioned prompt file
+        queries: List of query strings
+        max_concurrency: Maximum number of concurrent requests (default: 10)
+        verbose: Print progress messages
+
+    Returns:
+        List of response strings (same order as queries)
+
+    Example:
+        >>> import asyncio
+        >>> from backend.prompts.versions.researcher.v3_0 import get_researcher_prompt
+        >>> from evaluation.test_suite import get_test_suite
+        >>>
+        >>> async def main():
+        ...     test_suite = get_test_suite()
+        ...     queries = [q.query for q in test_suite]  # All 32 queries
+        ...     responses = await async_invoke_researcher_batch(
+        ...         get_researcher_prompt, queries, max_concurrency=10, verbose=True
+        ...     )
+        ...     print(f"Completed {len(responses)} queries")
+        >>>
+        >>> asyncio.run(main())
+    """
+    if verbose:
+        print(f"\nRunning {len(queries)} queries in parallel (max concurrency: {max_concurrency})")
+        print(f"{'='*80}\n")
+
+    # Create semaphore to limit concurrency
+    semaphore = asyncio.Semaphore(max_concurrency)
+
+    # Create tasks for all queries
+    tasks = []
+    for i, query in enumerate(queries):
+        config = {
+            "configurable": {"thread_id": f"async_batch_{i}_{hash(query)}"},
+            "recursion_limit": RECURSION_LIMIT
+        }
+
+        task = async_invoke_researcher_with_prompt(
+            prompt_func=prompt_func,
+            query=query,
+            config=config,
+            semaphore=semaphore
+        )
+        tasks.append(task)
+
+    # Execute all tasks in parallel with gather (preserves order)
+    try:
+        if verbose:
+            print("Starting parallel execution...")
+
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Convert exceptions to error strings
+        responses_processed = []
+        errors = 0
+        for i, r in enumerate(responses):
+            if isinstance(r, Exception):
+                error_msg = f"ERROR: {str(r)}"
+                responses_processed.append(error_msg)
+                errors += 1
+                if verbose:
+                    print(f"  [{i+1}/{len(queries)}] ✗ Failed: {str(r)}")
+            else:
+                responses_processed.append(r)
+                if verbose:
+                    print(f"  [{i+1}/{len(queries)}] ✓ Completed ({len(r)} chars)")
+
+        if verbose:
+            print(f"\n{'='*80}")
+            print(f"✓ Batch complete: {len(responses_processed)} responses")
+            if errors > 0:
+                print(f"⚠ {errors} queries failed")
+            print(f"{'='*80}\n")
+
+        return responses_processed
+
+    except Exception as e:
+        if verbose:
+            print(f"\n✗ Batch failed: {str(e)}")
+        raise
 
 
 # ============================================================================
