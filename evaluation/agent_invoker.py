@@ -28,6 +28,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 # LangChain imports
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage
 
 # Import shared tools
@@ -85,6 +86,62 @@ def create_researcher_agent(
     return researcher_graph
 
 
+def create_researcher_agent_groq(
+    prompt_func: Callable[[str], str],
+    model_name: str = "moonshotai/kimi-k2-instruct-0905",
+    temperature: float = TEMPERATURE
+) -> StateGraph:
+    """
+    Create a researcher agent using Groq (for Kimi K2 and other Groq models).
+
+    Uses ChatGroq with system prompt prepended as SystemMessage since create_agent
+    doesn't support system_prompt parameter with Groq models.
+
+    Args:
+        prompt_func: Function that takes current_date and returns system prompt
+        model_name: Groq model to use (default: moonshotai/kimi-k2-instruct-0905)
+        temperature: Sampling temperature (default: 0.7)
+
+    Returns:
+        Configured researcher agent graph (StateGraph)
+
+    Example:
+        >>> from backend.prompts.versions.researcher.v3_1 import get_researcher_prompt
+        >>> agent = create_researcher_agent_groq(get_researcher_prompt)
+        >>> result = agent.invoke({"messages": [HumanMessage("Research AI trends")]})
+    """
+    from langchain_core.messages import SystemMessage
+
+    # Get researcher tools (planning + research + files, NO delegation)
+    researcher_tools = get_subagent_tools()
+
+    # Get system prompt with current date
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    researcher_system_prompt = prompt_func(current_date)
+
+    # Create base researcher agent WITHOUT system_prompt parameter
+    # (Groq doesn't support system_prompt in create_agent)
+    base_researcher_graph = create_agent(
+        model=ChatGroq(model=model_name, temperature=temperature),
+        tools=researcher_tools
+    )
+
+    # Create wrapper that prepends system message
+    class GroqAgentWrapper:
+        """Wrapper to prepend SystemMessage for Groq models"""
+        def __init__(self, graph, system_prompt):
+            self.graph = graph
+            self.system_message = SystemMessage(content=system_prompt)
+
+        def invoke(self, input_dict, config=None):
+            # Prepend system message to user messages
+            messages = input_dict.get("messages", [])
+            messages_with_system = [self.system_message] + messages
+            return self.graph.invoke({"messages": messages_with_system}, config)
+
+    return GroqAgentWrapper(base_researcher_graph, researcher_system_prompt)
+
+
 def invoke_researcher_with_prompt(
     prompt_func: Callable[[str], str],
     query: str,
@@ -120,6 +177,67 @@ def invoke_researcher_with_prompt(
     """
     # Create researcher agent with specified prompt
     researcher_graph = create_researcher_agent(prompt_func)
+
+    # Prepare config (use defaults if not provided)
+    if config is None:
+        config = {}
+
+    # Ensure recursion limit is set
+    if "recursion_limit" not in config:
+        config["recursion_limit"] = RECURSION_LIMIT
+
+    # Prepare input messages
+    messages = [HumanMessage(content=query)]
+
+    # Invoke agent
+    try:
+        result = researcher_graph.invoke(
+            {"messages": messages},
+            config=config
+        )
+    except Exception as e:
+        raise Exception(f"Agent invocation failed for query '{query[:50]}...': {str(e)}")
+
+    # Extract final response from messages
+    agent_response = extract_final_response(result.get("messages", []))
+
+    return agent_response
+
+
+def invoke_researcher_with_prompt_groq(
+    prompt_func: Callable[[str], str],
+    query: str,
+    model_name: str = "moonshotai/kimi-k2-instruct-0905",
+    config: Dict[str, Any] = None
+) -> str:
+    """
+    Invoke researcher agent using Groq with a specific prompt version on a single query.
+
+    Identical to invoke_researcher_with_prompt() but uses ChatGroq instead of ChatGoogleGenerativeAI.
+
+    Args:
+        prompt_func: Prompt function from versioned prompt file
+        query: Research query string
+        model_name: Groq model to use (default: moonshotai/kimi-k2-instruct-0905)
+        config: Optional LangGraph config dict with thread_id, recursion_limit, etc.
+
+    Returns:
+        Final response text from the researcher agent (string)
+
+    Raises:
+        Exception: If agent execution fails
+
+    Example:
+        >>> from backend.prompts.versions.researcher.v3_1 import get_researcher_prompt
+        >>> response = invoke_researcher_with_prompt_groq(
+        ...     prompt_func=get_researcher_prompt,
+        ...     query="What are the latest developments in quantum computing?",
+        ...     model_name="moonshotai/kimi-k2-instruct-0905",
+        ...     config={"configurable": {"thread_id": "eval_kimi_k2_q001"}}
+        ... )
+    """
+    # Create researcher agent with specified prompt and Groq model
+    researcher_graph = create_researcher_agent_groq(prompt_func, model_name)
 
     # Prepare config (use defaults if not provided)
     if config is None:
@@ -380,6 +498,108 @@ async def async_invoke_researcher_batch(
             semaphore=semaphore
         )
         tasks.append(task)
+
+    # Execute all tasks in parallel with gather (preserves order)
+    try:
+        if verbose:
+            print("Starting parallel execution...")
+
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Convert exceptions to error strings
+        responses_processed = []
+        errors = 0
+        for i, r in enumerate(responses):
+            if isinstance(r, Exception):
+                error_msg = f"ERROR: {str(r)}"
+                responses_processed.append(error_msg)
+                errors += 1
+                if verbose:
+                    print(f"  [{i+1}/{len(queries)}] ✗ Failed: {str(r)}")
+            else:
+                responses_processed.append(r)
+                if verbose:
+                    print(f"  [{i+1}/{len(queries)}] ✓ Completed ({len(r)} chars)")
+
+        if verbose:
+            print(f"\n{'='*80}")
+            print(f"✓ Batch complete: {len(responses_processed)} responses")
+            if errors > 0:
+                print(f"⚠ {errors} queries failed")
+            print(f"{'='*80}\n")
+
+        return responses_processed
+
+    except Exception as e:
+        if verbose:
+            print(f"\n✗ Batch failed: {str(e)}")
+        raise
+
+
+async def async_invoke_researcher_batch_groq(
+    prompt_func: Callable[[str], str],
+    queries: List[str],
+    model_name: str = "moonshotai/kimi-k2-instruct-0905",
+    max_concurrency: int = 10,
+    verbose: bool = False
+) -> List[str]:
+    """
+    Invoke researcher on multiple queries in parallel using asyncio with Groq (Kimi K2).
+
+    Identical to async_invoke_researcher_batch() but uses ChatGroq instead of ChatGoogleGenerativeAI.
+
+    Args:
+        prompt_func: Prompt function from versioned prompt file
+        queries: List of query strings
+        model_name: Groq model to use (default: moonshotai/kimi-k2-instruct-0905)
+        max_concurrency: Maximum number of concurrent requests (default: 10)
+        verbose: Print progress messages
+
+    Returns:
+        List of response strings (same order as queries)
+
+    Example:
+        >>> import asyncio
+        >>> from backend.prompts.versions.researcher.v3_1 import get_researcher_prompt
+        >>> from evaluation.test_suite import get_test_suite
+        >>>
+        >>> async def main():
+        ...     test_suite = get_test_suite()
+        ...     queries = [q.query for q in test_suite]  # All 32 queries
+        ...     responses = await async_invoke_researcher_batch_groq(
+        ...         get_researcher_prompt, queries,
+        ...         model_name="moonshotai/kimi-k2-instruct-0905",
+        ...         max_concurrency=5, verbose=True
+        ...     )
+        ...     print(f"Completed {len(responses)} queries")
+        >>>
+        >>> asyncio.run(main())
+    """
+    if verbose:
+        print(f"\nRunning {len(queries)} queries in parallel (max concurrency: {max_concurrency})")
+        print(f"Model: {model_name}")
+        print(f"{'='*80}\n")
+
+    # Create semaphore to limit concurrency
+    semaphore = asyncio.Semaphore(max_concurrency)
+
+    # Create tasks for all queries
+    async def _invoke_with_semaphore(query: str, index: int) -> str:
+        """Wrapper to invoke with semaphore and model_name."""
+        async with semaphore:
+            loop = asyncio.get_event_loop()
+            config = {
+                "configurable": {"thread_id": f"async_groq_{index}_{hash(query)}"},
+                "recursion_limit": RECURSION_LIMIT
+            }
+
+            def _sync_invoke():
+                return invoke_researcher_with_prompt_groq(prompt_func, query, model_name, config)
+
+            result = await loop.run_in_executor(None, _sync_invoke)
+            return result
+
+    tasks = [_invoke_with_semaphore(query, i) for i, query in enumerate(queries)]
 
     # Execute all tasks in parallel with gather (preserves order)
     try:
